@@ -33,8 +33,10 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent* pe);
     virtual void mousePressEvent(QMouseEvent* pe);
 
+
 public slots:
     void slotSetPrevPos(QPoint prevPos);
+
 
 signals:
     void prevPosChanged(QPoint prevPos);

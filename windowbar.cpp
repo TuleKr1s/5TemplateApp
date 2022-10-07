@@ -1,23 +1,25 @@
 #include "windowbar.h"
-#include "qdebug.h"
 #include "qevent.h"
 
 #include <QPushButton>
 #include <QBoxLayout>
 #include <QLabel>
+#include <QPropertyAnimation>
 
 WindowBar::WindowBar(QWidget* wgt)
     : QWidget(wgt), mainWgt(wgt)
 {
+    mainWgt->setWindowFlags(Qt::FramelessWindowHint);
+
     m_btnHide   = new QPushButton("-");
     m_btnClose  = new QPushButton("X");
 
-    connect(m_btnHide, SIGNAL(clicked()), mainWgt, SLOT(showMinimized()));
-    connect(m_btnClose, SIGNAL(clicked()), mainWgt, SLOT(close()));
+    connect(m_btnHide, SIGNAL(clicked()), mainWgt, SLOT(slotShowMinimized()));
+    connect(m_btnClose, SIGNAL(clicked()), mainWgt, SLOT(slotClose()));
 
     // Переменные для расчета высоты области виджета
-    auto dy = m_btnHide->size().height();
-    auto posDy = m_btnHide->pos().y();
+    auto dy = 21;   // Высота кнопки
+    auto posDy = m_btnHide->pos().y();  //
 
     // Установка области виджета
     this->setGeometry(QRect(QPoint(0,0), QSize(mainWgt->width(),posDy*2+dy)));
@@ -63,3 +65,10 @@ void WindowBar::mouseMoveEvent(QMouseEvent* pe) {
     mainWgt->setGeometry(mainWgt->x() + dx, mainWgt->y() + dy, width(), height());
     return QWidget::mouseMoveEvent(pe);
 }
+
+
+
+
+
+
+

@@ -14,6 +14,10 @@ public:
 private:
     QTabWidget*     m_tabWidget;
     QVBoxLayout*    m_boxLayout;
+
+private slots:
+    void slotShowMinimized();
+    void slotClose();
 };
 
 #endif // APPWINDOW_H
