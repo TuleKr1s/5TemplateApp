@@ -9,16 +9,19 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    btnarea.cpp \
+    appwindow.cpp \
     main.cpp \
-    mainwindwow.cpp
+    maintab.cpp \
+    settingstab.cpp \
+    windowbar.cpp
 
 HEADERS += \
-    btnarea.h \
-    mainwindwow.h
+    appwindow.h \
+    maintab.h \
+    settingstab.h \
+    windowbar.h
 
-FORMS += \
-    mainwindwow.ui
+FORMS +=
 
 TRANSLATIONS += \
     5TemplateApp_en_US.ts
