@@ -9,17 +9,17 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    appwindow.cpp \
     main.cpp \
     maintab.cpp \
-    settingstab.cpp \
-    windowbar.cpp
+    templatewidgetitem.cpp \
+    test.cpp \
+    windowframe.cpp
 
 HEADERS += \
-    appwindow.h \
     maintab.h \
-    settingstab.h \
-    windowbar.h
+    templatewidgetitem.h \
+    test.h \
+    windowframe.h
 
 FORMS +=
 

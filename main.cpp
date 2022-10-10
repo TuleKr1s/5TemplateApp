@@ -1,16 +1,21 @@
 #include <QApplication>
 #include <QtWidgets>
 
-#include "appwindow.h"
+#include "maintab.h"
+#include "templatewidgetitem.h"
+#include <QPalette>
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
 
-    AppWindow window;
+    TemplateWidgetItem wf;
+    wf.show();
 
-    window.setFixedSize(QSize(800,600));
-    window.show();
+    QPalette pal(wf.palette());
+    pal.setColor(QPalette::Window, QColor("#121212"));
+    wf.setAutoFillBackground(true);
+    wf.setPalette(pal);
 
     return app.exec();
 }
