@@ -90,7 +90,7 @@ void WindowFrame::slotMinimized() {
     QPropertyAnimation* animPos = new QPropertyAnimation(this, "pos");
     QPropertyAnimation* animOp = new QPropertyAnimation(this, "windowOpacity");
 
-    int duration = 100;
+    int duration = 50;
 
     // замена
     int x = this->pos().x();

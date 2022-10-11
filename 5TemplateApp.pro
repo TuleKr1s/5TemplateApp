@@ -11,12 +11,14 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     maintab.cpp \
+    templatelist.cpp \
     templatewidgetitem.cpp \
     test.cpp \
     windowframe.cpp
 
 HEADERS += \
     maintab.h \
+    templatelist.h \
     templatewidgetitem.h \
     test.h \
     windowframe.h

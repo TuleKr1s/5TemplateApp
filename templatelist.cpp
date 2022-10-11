@@ -1,27 +1,32 @@
-#include "templatewidgetitem.h"
+#include "templatelist.h"
 
-#include <QPushButton>
-#include <QApplication>
+#include <QListWidget>
 #include <QBoxLayout>
 #include <QLabel>
+#include <QPushButton>
+#include <QApplication>
 #include <QFile>
 
-TemplateWidgetItem::TemplateWidgetItem(QWidget* wgt)
+TemplateList::TemplateList(QWidget* wgt)
     : QWidget(wgt), mainWgt(wgt)
 {
 
-    temp = 1;
+}
+
+
+void TemplateList::makeListItem(QPixmap icon, QString name)
+{
+    QWidget* temp = new QWidget;
+    temp->setObjectName("tempWgt");
+    m_listWidget = new QListWidget;
+
     QString dirPath = QApplication::applicationDirPath()+
             "/icons/";
     double factor = 20.0;
-
     setMinimumWidth(370);
-
     // buttons settings
     m_btnEdit = new QPushButton;
     m_btnDelete = new QPushButton;
-    connect(m_btnEdit, SIGNAL(clicked()), this, SLOT(slotTest()));
-
     m_btnEdit->setObjectName("btnEdit");
     m_btnDelete->setObjectName("btnDelete");
 
@@ -42,38 +47,36 @@ TemplateWidgetItem::TemplateWidgetItem(QWidget* wgt)
     QString str = QLatin1String(file.readAll());
     setStyleSheet(str);
 
-    m_lblIcon = new QLabel;
-    m_templateName = new QLabel;
+    m_icon = icon;
+    m_icon = m_icon.scaled(m_icon.size()/16);
+    QLabel* lblIcon = new QLabel;
+    lblIcon->setPixmap(m_icon);
 
-    //setName("name");
-    //QPixmap pix(dirPath+"template icons/free-icon-3d-view-4236727.png");
-    //setIcon(pix);
+    m_lblName = new QLabel(name);
+    m_lblName->setObjectName("templateName");
 
     QHBoxLayout* box = new QHBoxLayout;
-    box->addWidget(m_lblIcon);
+    box->addWidget(lblIcon);
     box->addSpacing(5);
-    box->addWidget(m_templateName);
+    box->addWidget(m_lblName);
     box->addStretch();
     box->addWidget(m_btnEdit);
     box->addSpacing(-3);
     box->addWidget(m_btnDelete);
-    setLayout(box);
+    temp->setLayout(box);
+
+    QListWidgetItem* item = new QListWidgetItem(m_listWidget);
+    item->setSizeHint(temp->sizeHint());
+    m_listWidget->setItemWidget(item,temp);
+
+    QVBoxLayout* vBox = new QVBoxLayout;
+    vBox->addWidget(m_listWidget);
+    setLayout(vBox);
 }
 
 
-void TemplateWidgetItem::setIcon(QPixmap icon) {
-    icon = icon.scaled(icon.size()/(16));
-    m_lblIcon->setPixmap(icon);
-}
 
-void TemplateWidgetItem::setName(QString name) {
-    m_templateName->setObjectName("templateName");
-    if (name.size() > 16) {
-        name.resize(16);
-        name += "...";
-    }
-    m_templateName->setText(name);
-}
+
 
 
 

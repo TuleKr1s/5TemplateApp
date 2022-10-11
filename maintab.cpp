@@ -1,4 +1,5 @@
 #include "maintab.h"
+#include "templatewidgetitem.h"
 
 #include <QPushButton>
 #include <QApplication>
@@ -22,6 +23,7 @@ MainTab::MainTab(QWidget* wgt)
     // division factor
     double factor = 11.0;
 
+    // buttons settings
     m_btnCreate->setIcon(createIcon);
     m_btnCreate->setIconSize(createIcon.size()/factor);
     m_btnCreate->setFlat(true);
@@ -30,11 +32,15 @@ MainTab::MainTab(QWidget* wgt)
     m_btnAddExisting->setIconSize(AddIcon.size()/factor);
     m_btnAddExisting->setFlat(true);
 
+    // list widget settings
+    m_listWidget = new QListWidget;
+
+
     //=========================================
 
     setGeometry(QRect(QPoint(800,500), QSize(800, 600)));
 
-    // settings qss style
+    // qss style
     QFile file(dirPath+"style.qss");
     file.open(QFile::ReadOnly);
     QString str = QLatin1String(file.readAll());
@@ -50,10 +56,20 @@ MainTab::MainTab(QWidget* wgt)
 
     // main layout
     m_mainBox = new QHBoxLayout;
+    m_mainBox->addWidget(m_listWidget);
     m_mainBox->addStretch();
     m_mainBox->addLayout(btnBox);
     setLayout(m_mainBox);
 
 
 }
+
+
+
+
+
+
+
+
+
 

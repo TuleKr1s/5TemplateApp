@@ -20,6 +20,9 @@ private:
     QPushButton* m_btnAddExisting;
 
     QHBoxLayout* m_mainBox;
+
+    QListWidget* m_listWidget;
+
 };
 
 #endif // MAINTAB_H
