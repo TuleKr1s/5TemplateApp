@@ -1,4 +1,5 @@
 #include "templatelist.h"
+#include "mylistwidgetitem.h"
 
 #include <QListWidget>
 #include <QBoxLayout>
@@ -10,20 +11,35 @@
 TemplateList::TemplateList(QWidget* wgt)
     : QWidget(wgt), mainWgt(wgt)
 {
+    m_listWidget = new QListWidget;
 
+    dirPath = QApplication::applicationDirPath()+
+            "/icons/";
+    setMinimumWidth(370);
+
+
+
+    // qss style
+    QFile file(dirPath+"list action icons/style.qss");
+    file.open(QFile::ReadOnly);
+    QString str = QLatin1String(file.readAll());
+    setStyleSheet(str);
+
+    QVBoxLayout* vBox = new QVBoxLayout;
+    vBox->addWidget(m_listWidget);
+    setLayout(vBox);
 }
 
 
 void TemplateList::makeListItem(QPixmap icon, QString name)
 {
-    QWidget* temp = new QWidget;
-    temp->setObjectName("tempWgt");
-    m_listWidget = new QListWidget;
+    if (name.size() > 14) {
+        name.resize(14);
+        name+="...";
+    }
 
-    QString dirPath = QApplication::applicationDirPath()+
-            "/icons/";
     double factor = 20.0;
-    setMinimumWidth(370);
+
     // buttons settings
     m_btnEdit = new QPushButton;
     m_btnDelete = new QPushButton;
@@ -41,22 +57,21 @@ void TemplateList::makeListItem(QPixmap icon, QString name)
     m_btnDelete->setIcon(deleteIcon);
     m_btnDelete->setIconSize(deleteIcon.size()/factor);
 
-    // qss style
-    QFile file(dirPath+"list action icons/style.qss");
-    file.open(QFile::ReadOnly);
-    QString str = QLatin1String(file.readAll());
-    setStyleSheet(str);
+    // widget at widget list
+    QWidget* temp = new QWidget;
+    temp->setObjectName("tempWgt");
 
-    m_icon = icon;
-    m_icon = m_icon.scaled(m_icon.size()/16);
-    QLabel* lblIcon = new QLabel;
-    lblIcon->setPixmap(m_icon);
+    // template icon
+    icon = icon.scaled(icon.size()/16);
+    m_lblIcon = new QLabel;
+    m_lblIcon->setPixmap(icon);
 
+    // template name
     m_lblName = new QLabel(name);
     m_lblName->setObjectName("templateName");
 
     QHBoxLayout* box = new QHBoxLayout;
-    box->addWidget(lblIcon);
+    box->addWidget(m_lblIcon);
     box->addSpacing(5);
     box->addWidget(m_lblName);
     box->addStretch();
@@ -65,16 +80,26 @@ void TemplateList::makeListItem(QPixmap icon, QString name)
     box->addWidget(m_btnDelete);
     temp->setLayout(box);
 
-    QListWidgetItem* item = new QListWidgetItem(m_listWidget);
+    //m_btnEdit->hide();
+    //m_btnDelete->hide();
+
+    MyListWidgetItem* item = new MyListWidgetItem(m_listWidget,
+                                                  m_btnEdit,
+                                                  m_btnDelete);
     item->setSizeHint(temp->sizeHint());
     m_listWidget->setItemWidget(item,temp);
 
-    QVBoxLayout* vBox = new QVBoxLayout;
-    vBox->addWidget(m_listWidget);
-    setLayout(vBox);
 }
 
+//void TemplateList::enterEvent(QEnterEvent*) {
+//    m_btnEdit->show();
+//    m_btnDelete->show();
+//}
 
+//void TemplateList::leaveEvent(QEvent*) {
+//    m_btnEdit->hide();
+//    m_btnDelete->hide();
+//}
 
 
 

@@ -14,6 +14,8 @@ int main(int argc, char *argv[]) {
 
     TemplateList wf;
     wf.makeListItem(QPixmap(dirPath+"/icons/template icons/1.png"),
+                    QString("Template nameeeeeeeee"));
+    wf.makeListItem(QPixmap(dirPath+"/icons/template icons/1.png"),
                     QString("Template name"));
     wf.makeListItem(QPixmap(dirPath+"/icons/template icons/1.png"),
                     QString("Template name"));

@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     maintab.cpp \
+    mylistwidgetitem.cpp \
     templatelist.cpp \
     templatewidgetitem.cpp \
     test.cpp \
@@ -18,6 +19,7 @@ SOURCES += \
 
 HEADERS += \
     maintab.h \
+    mylistwidgetitem.h \
     templatelist.h \
     templatewidgetitem.h \
     test.h \

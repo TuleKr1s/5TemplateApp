@@ -16,13 +16,18 @@ public:
     void makeListItem(QPixmap, QString);
 private:
     QWidget* mainWgt;
+    QString dirPath;
 
     QListWidget* m_listWidget;
-    QPixmap m_icon;
     QLabel* m_lblName;
+    QLabel* m_lblIcon;
 
     QPushButton* m_btnEdit;
     QPushButton* m_btnDelete;
+
+protected:
+    //virtual void enterEvent(QEnterEvent*);
+    //virtual void leaveEvent(QEvent*);
 };
 
 #endif // TEMPLATELIST_H
