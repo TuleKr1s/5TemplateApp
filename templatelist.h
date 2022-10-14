@@ -18,6 +18,10 @@ private:
     QWidget* mainWgt;
     QString dirPath;
 
+    int countRow;
+
+    QVector<QVector<QWidget*>> arrWgt;
+
     QListWidget* m_listWidget;
     QLabel* m_lblName;
     QLabel* m_lblIcon;
@@ -25,9 +29,9 @@ private:
     QPushButton* m_btnEdit;
     QPushButton* m_btnDelete;
 
-protected:
-    //virtual void enterEvent(QEnterEvent*);
-    //virtual void leaveEvent(QEvent*);
+private slots:
+    void slotMouseEnter(int index);
+    void slotMouseLeave(int index);
 };
 
 #endif // TEMPLATELIST_H

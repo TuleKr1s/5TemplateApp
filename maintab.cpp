@@ -1,5 +1,4 @@
 #include "maintab.h"
-#include "templatewidgetitem.h"
 
 #include <QPushButton>
 #include <QApplication>
@@ -33,12 +32,16 @@ MainTab::MainTab(QWidget* wgt)
     m_btnAddExisting->setFlat(true);
 
     // list widget settings
-    m_listWidget = new QListWidget;
+    QString dirPathIcons = QApplication::applicationDirPath();
+    m_listWidget = new TemplateList(this);
+    m_listWidget->makeListItem(QPixmap(dirPathIcons+"/icons/template icons/1.png"),
+                               QString("123456789qwertyuiopasdfghjk"));
+    m_listWidget->makeListItem(QPixmap(dirPathIcons+"/icons/template icons/1.png"),
+                               QString("123456789qwertyuiopasdfghjk"));
+    m_listWidget->makeListItem(QPixmap(dirPathIcons+"/icons/template icons/1.png"),
+                               QString("123456789qwertyuiopasdfghjk"));
 
-
-    //=========================================
-
-    setGeometry(QRect(QPoint(800,500), QSize(800, 600)));
+    setGeometry(QRect(QPoint(590,236), QSize(800, 600)));
 
     // qss style
     QFile file(dirPath+"style.qss");
@@ -59,6 +62,7 @@ MainTab::MainTab(QWidget* wgt)
     m_mainBox->addWidget(m_listWidget);
     m_mainBox->addStretch();
     m_mainBox->addLayout(btnBox);
+    //m_mainBox->setContentsMargins(0,0,0,0);
     setLayout(m_mainBox);
 
 

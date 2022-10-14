@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "templatelist.h"
+
 class QPushButton;
 class QHBoxLayout;
 class QListWidget;
@@ -21,7 +23,7 @@ private:
 
     QHBoxLayout* m_mainBox;
 
-    QListWidget* m_listWidget;
+    TemplateList* m_listWidget;
 
 };
 
