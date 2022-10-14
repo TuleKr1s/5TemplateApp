@@ -9,12 +9,16 @@
 MainTab::MainTab(QWidget* wgt)
     :QWidget(wgt), mainWgt(wgt)
 {
+    setGeometry(QRect(QPoint(0,0), QSize(800, 600)));
+
+    QString dirPath = QApplication::applicationDirPath()+
+            "/icons/main action icons/";
+
     // ================buttons part=====================
     m_btnCreate = new QPushButton("&Create new \ntemplate");
     m_btnAddExisting = new QPushButton("&Add an existing \ntemplate...");
 
-    QString dirPath = QApplication::applicationDirPath()+
-            "/icons/main action icons/";
+    connect(m_btnCreate, SIGNAL(clicked()), SIGNAL(createClicked()));
 
     QPixmap AddIcon(dirPath+"open.png");
     QPixmap createIcon(dirPath+"create.png");
@@ -22,7 +26,6 @@ MainTab::MainTab(QWidget* wgt)
     // division factor
     double factor = 11.0;
 
-    // buttons settings
     m_btnCreate->setIcon(createIcon);
     m_btnCreate->setIconSize(createIcon.size()/factor);
     m_btnCreate->setFlat(true);
@@ -30,18 +33,17 @@ MainTab::MainTab(QWidget* wgt)
     m_btnAddExisting->setIcon(AddIcon);
     m_btnAddExisting->setIconSize(AddIcon.size()/factor);
     m_btnAddExisting->setFlat(true);
+    //=================================================
 
     // list widget settings
     QString dirPathIcons = QApplication::applicationDirPath();
     m_listWidget = new TemplateList(this);
-    m_listWidget->makeListItem(QPixmap(dirPathIcons+"/icons/template icons/1.png"),
-                               QString("123456789qwertyuiopasdfghjk"));
-    m_listWidget->makeListItem(QPixmap(dirPathIcons+"/icons/template icons/1.png"),
-                               QString("123456789qwertyuiopasdfghjk"));
-    m_listWidget->makeListItem(QPixmap(dirPathIcons+"/icons/template icons/1.png"),
-                               QString("123456789qwertyuiopasdfghjk"));
-
-    setGeometry(QRect(QPoint(590,236), QSize(800, 600)));
+//    m_listWidget->makeListItem(QPixmap(dirPathIcons+"/icons/template icons/1.png"),
+//                               QString("123456789qwertyuiopasdfghjk"));
+//    m_listWidget->makeListItem(QPixmap(dirPathIcons+"/icons/template icons/1.png"),
+//                               QString("123456789qwertyuiopasdfghjk"));
+//    m_listWidget->makeListItem(QPixmap(dirPathIcons+"/icons/template icons/1.png"),
+//                               QString("123456789qwertyuiopasdfghjk"));
 
     // qss style
     QFile file(dirPath+"style.qss");
@@ -62,13 +64,13 @@ MainTab::MainTab(QWidget* wgt)
     m_mainBox->addWidget(m_listWidget);
     m_mainBox->addStretch();
     m_mainBox->addLayout(btnBox);
-    //m_mainBox->setContentsMargins(0,0,0,0);
     setLayout(m_mainBox);
-
 
 }
 
-
+void MainTab::makeListItem(QPixmap pix, QString str) {
+    m_listWidget->makeListItem(pix, str);
+}
 
 
 

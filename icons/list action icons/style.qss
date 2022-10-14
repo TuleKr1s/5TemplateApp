@@ -1,0 +1,47 @@
+QLabel#templateName {
+    color: white;
+    font-size: 25px;
+}
+
+QPushButton {
+    border-radius: 5px;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+QListWidget {
+    background-color: #212121;
+    border: none;
+    border-radius: 10px;
+}
+
+
+QListWidget::item {
+    border: none;
+    border-radius: 10px;
+}
+
+QListWidget::item:hover {
+    background-color: #313131;
+}
+
+QListWidget::item:selected {
+    background-color: #313131;
+}
+
+QPushButton#btnEdit:hover {
+    background-color: #7d7d7d;
+}
+
+QPushButton#btnDelete:hover {
+    background-color: #BF4829;
+}
+
+QPushButton#btnDelete:pressed {
+    background-color: #f16a48;
+}
+
+
+QPushButton#btnEdit:pressed {
+    background-color: #aaaaaa;
+}

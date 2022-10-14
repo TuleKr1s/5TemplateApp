@@ -3,7 +3,7 @@
 MyWidget::MyWidget(int index, QWidget* wgt)
     : QWidget(wgt), m_index(index)
 {
-
+    //setMinimumHeight(50);
 }
 
 

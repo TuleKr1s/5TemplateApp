@@ -5,6 +5,8 @@
 #include "maintab.h"
 #include "windowframe.h"
 #include "templatelist.h"
+#include "windowcreatetemplate.h"
+#include "application.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -12,7 +14,7 @@ int main(int argc, char *argv[]) {
     QString dirPath = QApplication::applicationDirPath();
     qDebug() << dirPath;
 
-    MainTab wf;
+    Application wf;
     wf.show();
 
     QPalette pal(wf.palette());

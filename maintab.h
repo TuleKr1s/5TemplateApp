@@ -15,6 +15,8 @@ class MainTab : public QWidget
 public:
     MainTab(QWidget* wgt = 0);
 
+    void makeListItem(QPixmap, QString);
+
 private:
     QWidget* mainWgt;
 
@@ -24,6 +26,9 @@ private:
     QHBoxLayout* m_mainBox;
 
     TemplateList* m_listWidget;
+
+signals:
+    void createClicked();
 
 };
 
