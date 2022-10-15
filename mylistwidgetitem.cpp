@@ -9,7 +9,3 @@ MyListWidgetItem::MyListWidgetItem(QListWidget* wgt,
 {
 
 }
-
-bool MyListWidgetItem::eventFilter(QObject* obj, QEvent* event) {
-    bool result = QObject::eventFilter(obj, event)
-}
