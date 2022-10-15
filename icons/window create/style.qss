@@ -1,0 +1,10 @@
+QLabel {
+    color: white;
+}
+QLabel#error0 {
+    color: red;
+}
+
+QLabel#error15 {
+    color: red;
+}

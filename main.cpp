@@ -3,22 +3,18 @@
 #include <QPalette>
 
 #include "maintab.h"
-#include "templatewidgetitem.h"
 #include "windowframe.h"
 #include "templatelist.h"
+#include "windowcreatetemplate.h"
+#include "application.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     QString dirPath = QApplication::applicationDirPath();
+    qDebug() << dirPath;
 
-    TemplateList wf;
-    wf.makeListItem(QPixmap(dirPath+"/icons/template icons/1.png"),
-                    QString("Template nameeeeeeeee"));
-    wf.makeListItem(QPixmap(dirPath+"/icons/template icons/1.png"),
-                    QString("Template name"));
-    wf.makeListItem(QPixmap(dirPath+"/icons/template icons/1.png"),
-                    QString("Template name"));
+    Application wf;
     wf.show();
 
     QPalette pal(wf.palette());

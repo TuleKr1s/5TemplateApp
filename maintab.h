@@ -3,8 +3,11 @@
 
 #include <QWidget>
 
+#include "templatelist.h"
+
 class QPushButton;
 class QHBoxLayout;
+class QLabel;
 class QListWidget;
 
 class MainTab : public QWidget
@@ -13,6 +16,7 @@ class MainTab : public QWidget
 public:
     MainTab(QWidget* wgt = 0);
 
+    void makeListItem(QPixmap, QString);
 private:
     QWidget* mainWgt;
 
@@ -21,7 +25,14 @@ private:
 
     QHBoxLayout* m_mainBox;
 
-    QListWidget* m_listWidget;
+    TemplateList* m_listWidget;
+
+    QLabel* strWithoutTemplate;
+signals:
+    void createClicked();
+
+private slots:
+    void slotSwitchLbl();
 
 };
 

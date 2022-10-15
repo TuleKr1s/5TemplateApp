@@ -14,9 +14,16 @@ public:
     TemplateList(QWidget* wgt = 0);
 
     void makeListItem(QPixmap, QString);
+    int getCountListItems();
 private:
     QWidget* mainWgt;
     QString dirPath;
+
+    int countRow;
+
+    int countListItems;
+
+    QVector<QVector<QWidget*>> arrWgt;
 
     QListWidget* m_listWidget;
     QLabel* m_lblName;
@@ -25,9 +32,12 @@ private:
     QPushButton* m_btnEdit;
     QPushButton* m_btnDelete;
 
-protected:
-    //virtual void enterEvent(QEnterEvent*);
-    //virtual void leaveEvent(QEvent*);
+private slots:
+    void slotMouseEnter(int index);
+    void slotMouseLeave(int index);
+
+signals:
+    void countListItemsChanged(int);
 };
 
 #endif // TEMPLATELIST_H
