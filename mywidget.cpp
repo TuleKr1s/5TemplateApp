@@ -8,9 +8,17 @@ MyWidget::MyWidget(int index, QWidget* wgt)
 
 
 void MyWidget::enterEvent(QEnterEvent*) {
-    emit mouseEnter(m_index);
+    emit mouseEnter();
 }
 
 void MyWidget::leaveEvent(QEvent*) {
-    emit mouseLeave(m_index);
+    emit mouseLeave();
+}
+
+int MyWidget::getIndex() {
+    return m_index;
+}
+
+void MyWidget::setIndex(int index) {
+    m_index = index;
 }

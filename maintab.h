@@ -7,6 +7,7 @@
 
 class QPushButton;
 class QHBoxLayout;
+class QLabel;
 class QListWidget;
 
 class MainTab : public QWidget
@@ -16,7 +17,6 @@ public:
     MainTab(QWidget* wgt = 0);
 
     void makeListItem(QPixmap, QString);
-
 private:
     QWidget* mainWgt;
 
@@ -27,8 +27,12 @@ private:
 
     TemplateList* m_listWidget;
 
+    QLabel* strWithoutTemplate;
 signals:
     void createClicked();
+
+private slots:
+    void slotSwitchLbl();
 
 };
 

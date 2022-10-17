@@ -18,3 +18,10 @@ QPushButton:hover {
 QPushButton:pressed {
     background-color: #aaaaaa;
 }
+
+QLabel#strWithoutTemplate {
+    color: white;
+    font-size: 24px;
+    background-color: #212121;
+    border-radius: 10px;
+}

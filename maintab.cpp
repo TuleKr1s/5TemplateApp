@@ -5,6 +5,7 @@
 #include <QBoxLayout>
 #include <QFile>
 #include <QListWidget>
+#include <QLabel>
 
 MainTab::MainTab(QWidget* wgt)
     :QWidget(wgt), mainWgt(wgt)
@@ -13,6 +14,8 @@ MainTab::MainTab(QWidget* wgt)
 
     QString dirPath = QApplication::applicationDirPath()+
             "/icons/main action icons/";
+
+
 
     // ================buttons part=====================
     m_btnCreate = new QPushButton("&Create new \ntemplate");
@@ -33,17 +36,23 @@ MainTab::MainTab(QWidget* wgt)
     m_btnAddExisting->setIcon(AddIcon);
     m_btnAddExisting->setIconSize(AddIcon.size()/factor);
     m_btnAddExisting->setFlat(true);
+
+
     //=================================================
 
     // list widget settings
     QString dirPathIcons = QApplication::applicationDirPath();
     m_listWidget = new TemplateList(this);
-//    m_listWidget->makeListItem(QPixmap(dirPathIcons+"/icons/template icons/1.png"),
-//                               QString("123456789qwertyuiopasdfghjk"));
-//    m_listWidget->makeListItem(QPixmap(dirPathIcons+"/icons/template icons/1.png"),
-//                               QString("123456789qwertyuiopasdfghjk"));
-//    m_listWidget->makeListItem(QPixmap(dirPathIcons+"/icons/template icons/1.png"),
-//                               QString("123456789qwertyuiopasdfghjk"));
+
+    connect(m_listWidget, SIGNAL(countListItemsChanged(int)),
+            SLOT(slotSwitchLbl()));
+
+    // this QLabel appears if the list of templates is empty
+    strWithoutTemplate = new QLabel("It's empty here :(\n"
+                                    "Create or add a template "
+                                    "to make \nit appear in this list");
+    strWithoutTemplate->setFixedSize(m_listWidget->size());
+    strWithoutTemplate->setObjectName("strWithoutTemplate");
 
     // qss style
     QFile file(dirPath+"style.qss");
@@ -61,18 +70,30 @@ MainTab::MainTab(QWidget* wgt)
 
     // main layout
     m_mainBox = new QHBoxLayout;
+    m_mainBox->addWidget(strWithoutTemplate);
     m_mainBox->addWidget(m_listWidget);
     m_mainBox->addStretch();
     m_mainBox->addLayout(btnBox);
     setLayout(m_mainBox);
 
+    // method to change list widget to label if it is empty
+    slotSwitchLbl();
 }
 
 void MainTab::makeListItem(QPixmap pix, QString str) {
     m_listWidget->makeListItem(pix, str);
 }
 
+void MainTab::slotSwitchLbl() {
+    if (m_listWidget->getCountListItems() == 0) {
+        m_listWidget->hide();
+        strWithoutTemplate->show();
+    } else {
+        strWithoutTemplate->hide();
+        m_listWidget->show();
+    }
 
+}
 
 
 

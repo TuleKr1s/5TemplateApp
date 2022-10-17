@@ -4,6 +4,7 @@
 #include <QWidget>
 
 class QListWidget;
+class QListWidgetItem;
 class QLabel;
 class QPushButton;
 
@@ -14,24 +15,29 @@ public:
     TemplateList(QWidget* wgt = 0);
 
     void makeListItem(QPixmap, QString);
+    int getCountListItems();
 private:
     QWidget* mainWgt;
     QString dirPath;
-
-    int countRow;
-
-    QVector<QVector<QWidget*>> arrWgt;
 
     QListWidget* m_listWidget;
     QLabel* m_lblName;
     QLabel* m_lblIcon;
 
+    QVector<QListWidgetItem*> arr;
+
     QPushButton* m_btnEdit;
     QPushButton* m_btnDelete;
 
+    int count;
+
 private slots:
-    void slotMouseEnter(int index);
-    void slotMouseLeave(int index);
+    void slotMouseEnter();
+    void slotMouseLeave();
+    void slotItemDelete();
+
+signals:
+    void countListItemsChanged(int);
 };
 
 #endif // TEMPLATELIST_H

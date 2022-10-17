@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QtWidgets>
 #include <QPalette>
+#include <vector>
 
 #include "maintab.h"
 #include "windowframe.h"
@@ -21,6 +22,7 @@ int main(int argc, char *argv[]) {
     pal.setColor(QPalette::Window, QColor("#121212"));
     wf.setAutoFillBackground(true);
     wf.setPalette(pal);
+
 
     return app.exec();
 }

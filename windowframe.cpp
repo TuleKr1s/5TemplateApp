@@ -104,13 +104,15 @@ void WindowFrame::slotMinimized() {
 
     animOp->setDuration(duration);
     animOp->setKeyValueAt(0,1);
-    animOp->setKeyValueAt(1,0);
+    animOp->setKeyValueAt(0.9,0);
+    animOp->setKeyValueAt(1,1);
 
-    animPos->start(QAbstractAnimation::DeleteWhenStopped);
-    animOp->start(QAbstractAnimation::DeleteWhenStopped);
+    //animPos->start();
+    animOp->start();
 
     // замена
     connect(animOp, SIGNAL(finished()), mainWgt, SLOT(showMinimized()));
+
 }
 
 QPoint WindowFrame::getPrevPos() {

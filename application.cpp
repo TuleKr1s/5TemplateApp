@@ -48,12 +48,17 @@ void Application::showCreateWnd() {
 }
 
 void Application::slotCreate() {
+    if (countIcon == lstIcons.size())
+        countIcon = 0;
+
     QPixmap pix(dirPath+"/icons/template icons/"+lstIcons[countIcon].fileName());
     QString name = m_wndCreate->getTemplateName();
-    m_mainTab->makeListItem(pix, name);
-    ++countIcon;
-    showMainTab();
-    m_wndCreate->setTemplateName("");
+    if (name != "error") {
+        m_mainTab->makeListItem(pix, name);
+        ++countIcon;
+        showMainTab();
+        m_wndCreate->setTemplateName("");
+    }
 }
 
 

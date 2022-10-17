@@ -21,12 +21,17 @@ private:
     QLineEdit* m_lineName;
     QLabel* m_lblName;
 
+
     QPushButton* m_btnCreate;
     QPushButton* m_btnCancel;
+
+    QLabel* strError0;
+    QLabel* strError15;
 
 signals:
     void createClicked();
     void cancelClicked();
+
 };
 
 #endif // WINDOWCREATETEMPLATE_H

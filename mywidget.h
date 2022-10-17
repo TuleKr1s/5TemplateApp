@@ -9,13 +9,15 @@ class MyWidget : public QWidget
 public:
     MyWidget(int index, QWidget* wgt = 0);
 
+    int getIndex();
+    void setIndex(int index);
 protected:
     virtual void enterEvent(QEnterEvent*);
     virtual void leaveEvent(QEvent*);
 
 signals:
-    void mouseEnter(int index);
-    void mouseLeave(int index);
+    void mouseEnter();
+    void mouseLeave();
 
 private:
     int m_index;

@@ -9,11 +9,6 @@
 #include <QFile>
 #include <QVector>
 
-#define WIDGET_ITEM(x)  arrWgt[x][0]
-#define BTN_DELETE(x)   arrWgt[x][1]
-#define BTN_EDIT(x)     arrWgt[x][2]
-#define ICON(x)         arrWgt[x][3]
-#define NAME(x)         arrWgt[x][4]
 
 TemplateList::TemplateList(QWidget* wgt)
     : QWidget(wgt), mainWgt(wgt)
@@ -23,11 +18,10 @@ TemplateList::TemplateList(QWidget* wgt)
     dirPath = QApplication::applicationDirPath()+
             "/icons/";
 
+    count = 0;
 
     setFixedSize(QSize(370,340));
 
-
-    countRow = 0;
 
     // qss style
     QFile file(dirPath+"list action icons/style.qss");
@@ -44,24 +38,23 @@ TemplateList::TemplateList(QWidget* wgt)
 void TemplateList::makeListItem(QPixmap icon, QString name)
 {
 
-    // initialization of array by widgets in widget list
-    arrWgt.resize(countRow+1);
-    arrWgt[countRow].resize(5);
-
-
+    arr.resize(count+1);
     // widget at widget list
-    MyWidget* temp = new MyWidget(countRow);
+    MyWidget* temp = new MyWidget(count);
     temp->setObjectName("tempWgt");
     connect(temp,
-            SIGNAL(mouseEnter(int)), SLOT(slotMouseEnter(int)));
+            SIGNAL(mouseEnter()), SLOT(slotMouseEnter()));
     connect(temp,
-            SIGNAL(mouseLeave(int)), SLOT(slotMouseLeave(int)));
+            SIGNAL(mouseLeave()), SLOT(slotMouseLeave()));
 
     // ===============buttons settings================
-    m_btnEdit = new QPushButton;
-    m_btnDelete = new QPushButton;
+    m_btnEdit = new QPushButton(temp);
+    m_btnDelete = new QPushButton(temp);
     m_btnEdit->setObjectName("btnEdit");
     m_btnDelete->setObjectName("btnDelete");
+
+    connect(m_btnDelete, SIGNAL(clicked()),
+            SLOT(slotItemDelete()));
 
     QPixmap editIcon(dirPath+"list action icons/edit.png");
     QPixmap deleteIcon(dirPath+"list action icons/delete3.png");
@@ -80,54 +73,71 @@ void TemplateList::makeListItem(QPixmap icon, QString name)
 
     // template icon
     icon = icon.scaled(icon.size()/16);
-    m_lblIcon = new QLabel;
+    m_lblIcon = new QLabel(temp);
     m_lblIcon->setPixmap(icon);
 
     // template name
-    m_lblName = new QLabel(name);
+    m_lblName = new QLabel(name, temp);
     m_lblName->setObjectName("templateName");
 
-    WIDGET_ITEM(countRow) = temp;
-    BTN_EDIT(countRow) = m_btnEdit;
-    BTN_DELETE(countRow) = m_btnDelete;
-    ICON(countRow) = m_lblIcon;
-    NAME(countRow) = m_lblName;
-
-
     QHBoxLayout* box = new QHBoxLayout;
-    box->addWidget(ICON(countRow)); // icon
+    box->addWidget(m_lblIcon);
     box->addSpacing(5);
-    box->addWidget(NAME(countRow)); // name
+    box->addWidget(m_lblName);
     box->addStretch();
-    box->addWidget(BTN_EDIT(countRow)); // btn edit
+    box->addWidget(m_btnEdit);
     box->addSpacing(-2);
-    box->addWidget(BTN_DELETE(countRow)); // btn delete
-    WIDGET_ITEM(countRow)->setLayout(box); // set lay to wgt
+    box->addWidget(m_btnDelete);
+    temp->setLayout(box);
 
     m_btnEdit->hide();
     m_btnDelete->hide();
 
     QListWidgetItem* item = new QListWidgetItem(m_listWidget);
-    item->setSizeHint(WIDGET_ITEM(countRow)->sizeHint());
-    m_listWidget->setItemWidget(item,WIDGET_ITEM(countRow));
+    item->setSizeHint(temp->sizeHint());
+    m_listWidget->setItemWidget(item, temp);
+    arr[count] = item;
 
-    ++countRow;
+    emit countListItemsChanged(m_listWidget->count());
+    ++count;
 }
 
-void TemplateList::slotMouseEnter(int index) {
+void TemplateList::slotMouseEnter() {
     setCursor(Qt::PointingHandCursor);
-    BTN_DELETE(index)->show();
-    BTN_EDIT(index)->show();
+    QWidget* wgt = (QWidget*)sender();
+    QPushButton* btnEdit = wgt->findChild<QPushButton*>("btnEdit");
+    QPushButton* btnDelete = wgt->findChild<QPushButton*>("btnDelete");
+    btnEdit->show();
+    btnDelete->show();
 }
 
-void TemplateList::slotMouseLeave(int index) {
+void TemplateList::slotMouseLeave() {
     setCursor(Qt::ArrowCursor);
-    BTN_DELETE(index)->hide();
-    BTN_EDIT(index)->hide();
+    QWidget* wgt = (QWidget*)sender();
+    QPushButton* btnEdit = wgt->findChild<QPushButton*>("btnEdit");
+    QPushButton* btnDelete = wgt->findChild<QPushButton*>("btnDelete");
+    btnEdit->hide();
+    btnDelete->hide();
 }
 
+int TemplateList::getCountListItems() {
+    return m_listWidget->count();
+}
+
+void TemplateList::slotItemDelete() {
+
+    QPushButton* btn = (QPushButton*)sender();
+    MyWidget* wgt = (MyWidget*)btn->parent();
+    int index = wgt->getIndex();
+    QListWidgetItem* item = arr[index];
+
+    int row = m_listWidget->row(item);
+    delete m_listWidget->takeItem(row);
 
 
+
+    emit countListItemsChanged(m_listWidget->count());
+}
 
 
 
