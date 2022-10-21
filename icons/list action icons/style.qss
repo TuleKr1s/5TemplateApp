@@ -41,6 +41,7 @@ QPushButton#btnDelete:pressed {
     background-color: #f16a48;
 }
 
+
 QPushButton#btnEdit:pressed {
     background-color: #aaaaaa;
 }

@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QPropertyAnimation>
 
 Application::Application(QWidget* wgt)
     : QWidget(wgt)
@@ -27,6 +28,11 @@ Application::Application(QWidget* wgt)
     lstIcons.pop_front();
     lstIcons.pop_front();
 
+    //qss style
+    QFile file(dirPath+"/icons/appStyle.qss");
+    file.open(QFile::ReadOnly);
+    QString str = QLatin1String(file.readAll());
+    setStyleSheet(str);
 
     // main layout
     QVBoxLayout* mainBox = new QVBoxLayout;
@@ -38,13 +44,34 @@ Application::Application(QWidget* wgt)
 }
 
 void Application::showMainTab() {
-    m_wndCreate->hide();
+
+
     m_mainTab->show();
+
+    QPropertyAnimation* anim = new QPropertyAnimation(m_wndCreate,"pos");
+    int x = width();
+    int y = 0;
+    anim->setDuration(125);
+    anim->setStartValue(QPoint(x-m_wndCreate->width(), y));
+    anim->setEndValue(QPoint(x,y));
+    anim->start(QAbstractAnimation::DeleteWhenStopped);
+
+    m_wndCreate->setTemplateName("");
+    connect(anim, SIGNAL(finished()), m_wndCreate, SLOT(hide()));
 }
 
 void Application::showCreateWnd() {
-    m_mainTab->hide();
     m_wndCreate->show();
+
+    QPropertyAnimation* anim = new QPropertyAnimation(m_wndCreate,"pos");
+    int x = width();
+    int y = 0;
+    anim->setDuration(125);
+    anim->setStartValue(QPoint(x,y));
+    anim->setEndValue(QPoint(x-m_wndCreate->width(), y));
+    anim->start(QAbstractAnimation::DeleteWhenStopped);
+
+    connect(anim, SIGNAL(finished()), m_mainTab, SLOT(hide()));
 }
 
 void Application::slotCreate() {

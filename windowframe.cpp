@@ -11,11 +11,14 @@
 WindowFrame::WindowFrame(QWidget* wgt)
     : QWidget(wgt), mainWgt(wgt)
 {
-    // ===========temp code for test==========
-    //замена
-    mainWgt->setWindowFlags(Qt::FramelessWindowHint);
-    //============================================
 
+    mainWgt->setWindowFlags(Qt::FramelessWindowHint);
+
+    // path to icons
+    QString dirPath = QApplication::applicationDirPath()+
+            "/icons/window frame icons/";
+
+    // =================buttons settings======================
     m_btnShowMaximize = new QPushButton;
     m_btnShowMinimize = new QPushButton;
     m_btnShowMinimize->setObjectName("minBtn");
@@ -23,11 +26,7 @@ WindowFrame::WindowFrame(QWidget* wgt)
     m_btnClose->setObjectName("closeBtn");
 
     connect(m_btnClose, SIGNAL(clicked()), this, SLOT(slotClose()));
-    connect(m_btnShowMinimize, SIGNAL(clicked()), this, SLOT(slotMinimized()));
-
-    // path to icons
-    QString dirPath = QApplication::applicationDirPath()+
-            "/icons/window frame icons/";
+    connect(m_btnShowMinimize, SIGNAL(clicked()), this, SLOT(slotMinimized()));   
 
     QPixmap maxIcon(dirPath+"max icon.png");
     QPixmap minIcon(dirPath+"min icon white.png");
@@ -51,14 +50,10 @@ WindowFrame::WindowFrame(QWidget* wgt)
     m_btnClose->setIconSize(QSize(closeIcon.size().width()/(factor-0.4),
                                   closeIcon.size().height()/factor));
     m_btnClose->setFlat(true);
+    //================================================================
 
-    // widget geometry замена 800
+    // widget geometry
     setGeometry(QRect(QPoint(0,0), QSize(800, closeIcon.height()/factor)));
-
-    // ===========temp code for test==========
-
-    //this->move(800, 600);
-    //====================================
 
     // settings qss style
     QFile file(dirPath+"style.qss");
@@ -77,40 +72,29 @@ WindowFrame::WindowFrame(QWidget* wgt)
 }
 
 void WindowFrame::slotClose() {
-    //замена
+
     QPropertyAnimation* anim = new QPropertyAnimation(mainWgt, "windowOpacity");
     anim->setDuration(120);
     anim->setKeyValueAt(0,1);
-    anim->setKeyValueAt(1,0);
+    anim->setKeyValueAt(0.99, 0);
+    anim->setKeyValueAt(1,1);
     anim->start(QAbstractAnimation::DeleteWhenStopped);
 
-    //замена
     connect(anim, SIGNAL(finished()), mainWgt, SLOT(close()));
 }
 
 void WindowFrame::slotMinimized() {
-    //замена
-    QPropertyAnimation* animPos = new QPropertyAnimation(mainWgt, "pos");
+
     QPropertyAnimation* animOp = new QPropertyAnimation(mainWgt, "windowOpacity");
 
-    int duration = 50;
-
-    // замена
-    int x = mainWgt->pos().x();
-    int y = mainWgt->pos().y();
-    animPos->setDuration(duration);
-    animPos->setStartValue(QPoint(x,y));
-    animPos->setEndValue(QPoint(x,0));
+    int duration = 120;
 
     animOp->setDuration(duration);
     animOp->setKeyValueAt(0,1);
-    animOp->setKeyValueAt(0.9,0);
+    animOp->setKeyValueAt(0.99,0);
     animOp->setKeyValueAt(1,1);
-
-    //animPos->start();
     animOp->start();
 
-    // замена
     connect(animOp, SIGNAL(finished()), mainWgt, SLOT(showMinimized()));
 
 }
@@ -134,7 +118,7 @@ void WindowFrame::mousePressEvent(QMouseEvent* me) {
 void WindowFrame::mouseMoveEvent(QMouseEvent* me) {
     auto dx = me->pos().x() - m_prevPos.x();
     auto dy = me->pos().y() - m_prevPos.y();
-    //замена
+
     mainWgt->setGeometry(mainWgt->x()+dx, mainWgt->y()+dy,mainWgt->width(),mainWgt->height());
     return QWidget::mouseMoveEvent(me);
 }

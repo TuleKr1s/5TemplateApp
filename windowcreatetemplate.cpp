@@ -14,6 +14,11 @@ WindowCreateTemplate::WindowCreateTemplate(QWidget* wgt)
     setGeometry(QRect(QPoint(0,0), QSize(800, 600)));
     QString dirPath = QApplication::applicationDirPath();
 
+    QPalette pal(this->palette());
+    pal.setColor(QPalette::Window, QColor("#121212"));
+    this->setAutoFillBackground(true);
+    this->setPalette(pal);
+
     // qss
     QFile file(dirPath+"/icons/window create/style.qss");
     file.open(QFile::ReadOnly);
@@ -86,6 +91,8 @@ QString WindowCreateTemplate::getTemplateName() {
 }
 
 void WindowCreateTemplate::setTemplateName(QString str) {
+    strError0->hide();
+    strError15->hide();
     m_lineName->setText(str);
 }
 
