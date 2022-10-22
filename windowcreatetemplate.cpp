@@ -1,4 +1,5 @@
 #include "windowcreatetemplate.h"
+#include "programlst.h"
 
 #include <QLineEdit>
 #include <QLabel>
@@ -58,17 +59,21 @@ WindowCreateTemplate::WindowCreateTemplate(QWidget* wgt)
     strError15->setObjectName("error15");
     //===================================
 
+    ProgramLst lst;
+
+    QVBoxLayout* box = new QVBoxLayout;
+    box->addStretch();
+    box->addWidget(m_lblName);
+    box->addWidget(m_lineName);
+    box->addWidget(strError0);
+    box->addWidget(strError15);
+    box->addStretch();
+    box->addLayout(btnBox);
+    box->addStretch();
 
     // main layout
-    QVBoxLayout* mainBox = new QVBoxLayout;
-    mainBox->addStretch();
-    mainBox->addWidget(m_lblName);
-    mainBox->addWidget(m_lineName);
-    mainBox->addWidget(strError0);
-    mainBox->addWidget(strError15);
-    mainBox->addStretch();
-    mainBox->addLayout(btnBox);
-    mainBox->addStretch();
+    QHBoxLayout* mainBox = new QHBoxLayout;
+
     setLayout(mainBox);
 
     strError0->hide();

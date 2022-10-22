@@ -13,6 +13,7 @@ SOURCES += \
     main.cpp \
     maintab.cpp \
     mywidget.cpp \
+    programlst.cpp \
     templatelist.cpp \
     test.cpp \
     windowcreatetemplate.cpp \
@@ -22,6 +23,7 @@ HEADERS += \
     application.h \
     maintab.h \
     mywidget.h \
+    programlst.h \
     templatelist.h \
     test.h \
     windowcreatetemplate.h \
