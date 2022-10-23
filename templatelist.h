@@ -8,14 +8,24 @@ class QListWidgetItem;
 class QLabel;
 class QPushButton;
 
+
+
 class TemplateList : public QWidget
 {
     Q_OBJECT
 public:
-    TemplateList(QWidget* wgt = 0);
+    enum flags {
+        TEMPLATE_LIST,
+        PROGRAM_LIST_ADD,
+        PROGRAM_LIST_REMOVE
+    };
+
+    TemplateList(QWidget* wgt = 0,
+                 flags flag = TEMPLATE_LIST);
 
     void makeListItem(QPixmap, QString);
     int getCountListItems();
+
 private:
     QWidget* mainWgt;
     QString dirPath;
@@ -26,10 +36,17 @@ private:
 
     QVector<QListWidgetItem*> arr;
 
+    // for template list
     QPushButton* m_btnEdit;
     QPushButton* m_btnDelete;
 
+    //for program list
+    QPushButton* m_btnAdd;
+    QPushButton* m_btnRemove;
+
     int count;
+
+    flags m_currentFlag;
 
 private slots:
     void slotMouseEnter();

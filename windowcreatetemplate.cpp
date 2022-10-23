@@ -59,9 +59,12 @@ WindowCreateTemplate::WindowCreateTemplate(QWidget* wgt)
     strError15->setObjectName("error15");
     //===================================
 
-    ProgramLst lst;
+    ProgramLst* lst = new ProgramLst(mainWgt);
 
     QVBoxLayout* box = new QVBoxLayout;
+    //temp
+    box->addWidget(lst);
+
     box->addStretch();
     box->addWidget(m_lblName);
     box->addWidget(m_lineName);
@@ -70,11 +73,13 @@ WindowCreateTemplate::WindowCreateTemplate(QWidget* wgt)
     box->addStretch();
     box->addLayout(btnBox);
     box->addStretch();
+    // temp
+    setLayout(box);
 
     // main layout
     QHBoxLayout* mainBox = new QHBoxLayout;
 
-    setLayout(mainBox);
+    //setLayout(mainBox);
 
     strError0->hide();
     strError15->hide();
