@@ -31,7 +31,7 @@ private slots:
     void showMainTab();
     void showCreateWnd();
 
-    void slotCreate();
+    void slotCreate(QPixmap);
 };
 
 #endif // APPLICATION_H

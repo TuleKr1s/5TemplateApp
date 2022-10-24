@@ -15,6 +15,8 @@ TemplateList::TemplateList(QWidget* wgt, flags flag)
 {
     m_listWidget = new QListWidget;
 
+    m_listWidget->setDragDropMode(QAbstractItemView::InternalMove);
+
     dirPath = QApplication::applicationDirPath()+
             "/icons/";
 
@@ -40,6 +42,11 @@ TemplateList::TemplateList(QWidget* wgt, flags flag)
     setLayout(vBox);
 }
 
+void TemplateList::makeListItem(QLabel* lblIcon, QLabel* lblName) {
+    QPixmap pix = lblIcon->pixmap();
+    QString name = lblName->text();
+    makeListItem(pix, name);
+}
 
 void TemplateList::makeListItem(QPixmap icon, QString name)
 {
@@ -65,10 +72,19 @@ void TemplateList::makeListItem(QPixmap icon, QString name)
     m_btnAdd->setObjectName("btnAdd");
     m_btnRemove->setObjectName("btnRemove");
 
-    connect(m_btnDelete, SIGNAL(clicked()),
+    connect(m_btnAdd, SIGNAL(clicked()),
+            SLOT(slotSendSignal()));
+    connect(m_btnRemove, SIGNAL(clicked()),
+            SLOT(slotSendSignal()));
+
+    connect(m_btnAdd, SIGNAL(clicked()),
             SLOT(slotItemDelete()));
     connect(m_btnRemove, SIGNAL(clicked()),
             SLOT(slotItemDelete()));
+
+    connect(m_btnDelete, SIGNAL(clicked()),
+            SLOT(slotItemDelete()));
+
 
     double factor = 20.0;
 
@@ -95,11 +111,11 @@ void TemplateList::makeListItem(QPixmap icon, QString name)
 
     m_btnAdd->setFlat(true);
     m_btnAdd->setIcon(addIcon);
-    m_btnAdd->setIconSize(addIcon.size());
+    m_btnAdd->setIconSize(addIcon.size()/1.4);
 
     m_btnRemove->setFlat(true);
     m_btnRemove->setIcon(removeIcon);
-    m_btnRemove->setIconSize(removeIcon.size());
+    m_btnRemove->setIconSize(removeIcon.size()/1.4);
     //=====================================
 
 
@@ -111,6 +127,7 @@ void TemplateList::makeListItem(QPixmap icon, QString name)
         icon = icon.scaled(icon.size()/16);
     m_lblIcon = new QLabel(temp);
     m_lblIcon->setPixmap(icon);
+    m_lblIcon->setObjectName("icon");
 
     // template name
     m_lblName = new QLabel(name, temp);
@@ -143,6 +160,7 @@ void TemplateList::makeListItem(QPixmap icon, QString name)
     item->setSizeHint(temp->sizeHint());
     m_listWidget->setItemWidget(item, temp);
     arr[count] = item;
+
 
     emit countListItemsChanged(m_listWidget->count());
     ++count;
@@ -205,6 +223,14 @@ void TemplateList::slotItemDelete() {
     emit countListItemsChanged(m_listWidget->count());
 }
 
+void TemplateList::slotSendSignal() {
+    QPushButton* btn = (QPushButton*)sender();
+    if (btn->objectName() == "btnAdd")
+        emit btnAddClicked(btn);
+    else if (btn->objectName() == "btnRemove")
+        emit btnRemoveClicked(btn);
+}
 
-
-
+QLabel* TemplateList::getFirstWidget() {
+    return m_lblIcon;
+}

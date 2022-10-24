@@ -3,6 +3,7 @@
 
 #include <QWidget>
 
+class MyWidget;
 class QListWidget;
 class QListWidgetItem;
 class QLabel;
@@ -24,7 +25,9 @@ public:
                  flags flag = TEMPLATE_LIST);
 
     void makeListItem(QPixmap, QString);
+    void makeListItem(QLabel*, QLabel*);
     int getCountListItems();
+    QLabel* getFirstWidget();
 
 private:
     QWidget* mainWgt;
@@ -53,8 +56,13 @@ private slots:
     void slotMouseLeave();
     void slotItemDelete();
 
+    void slotSendSignal();
+
+
 signals:
     void countListItemsChanged(int);
+    void btnAddClicked(QPushButton*);
+    void btnRemoveClicked(QPushButton*);
 };
 
 #endif // TEMPLATELIST_H

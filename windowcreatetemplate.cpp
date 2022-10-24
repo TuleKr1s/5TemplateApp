@@ -38,7 +38,7 @@ WindowCreateTemplate::WindowCreateTemplate(QWidget* wgt)
     m_btnCancel = new QPushButton("C&ancel");
 
     connect(m_btnCreate,
-            SIGNAL(clicked()), SIGNAL(createClicked()));
+            SIGNAL(clicked()), SLOT(slotSendCreateSignal()));
     connect(m_btnCancel,
             SIGNAL(clicked()), SIGNAL(cancelClicked()));
 
@@ -59,11 +59,11 @@ WindowCreateTemplate::WindowCreateTemplate(QWidget* wgt)
     strError15->setObjectName("error15");
     //===================================
 
-    ProgramLst* lst = new ProgramLst(mainWgt);
+    m_lst = new ProgramLst(mainWgt);
 
     QVBoxLayout* box = new QVBoxLayout;
     //temp
-    box->addWidget(lst);
+    box->addWidget(m_lst);
 
     box->addStretch();
     box->addWidget(m_lblName);
@@ -106,4 +106,7 @@ void WindowCreateTemplate::setTemplateName(QString str) {
     m_lineName->setText(str);
 }
 
-
+void WindowCreateTemplate::slotSendCreateSignal() {
+    QPixmap pix = m_lst->getFirstItemPix();
+    emit createClicked(pix);
+}

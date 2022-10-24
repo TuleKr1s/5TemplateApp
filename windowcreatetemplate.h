@@ -3,6 +3,7 @@
 
 #include <QWidget>
 
+class ProgramLst;
 class QLineEdit;
 class QLabel;
 class QPushButton;
@@ -28,8 +29,13 @@ private:
     QLabel* strError0;
     QLabel* strError15;
 
+    ProgramLst* m_lst;
+
+private slots:
+    void slotSendCreateSignal();
+
 signals:
-    void createClicked();
+    void createClicked(QPixmap);
     void cancelClicked();
 
 };

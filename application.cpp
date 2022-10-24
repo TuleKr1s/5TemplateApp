@@ -21,7 +21,7 @@ Application::Application(QWidget* wgt)
 
     connect(m_mainTab,SIGNAL(createClicked()),SLOT(showCreateWnd()));
     connect(m_wndCreate, SIGNAL(cancelClicked()), SLOT(showMainTab()));
-    connect(m_wndCreate, SIGNAL(createClicked()), SLOT(slotCreate()));
+    connect(m_wndCreate, SIGNAL(createClicked(QPixmap)), SLOT(slotCreate(QPixmap)));
 
     // initialization list with icons
     lstIcons = QDir(dirPath+"/icons/template icons").entryInfoList();
@@ -74,11 +74,11 @@ void Application::showCreateWnd() {
     connect(anim, SIGNAL(finished()), m_mainTab, SLOT(hide()));
 }
 
-void Application::slotCreate() {
+void Application::slotCreate(QPixmap pix) {
     if (countIcon == lstIcons.size())
         countIcon = 0;
 
-    QPixmap pix(dirPath+"/icons/template icons/"+lstIcons[countIcon].fileName());
+    //QPixmap pix(dirPath+"/icons/template icons/"+lstIcons[countIcon].fileName());
     QString name = m_wndCreate->getTemplateName();
     if (name != "error") {
         m_mainTab->makeListItem(pix, name);
