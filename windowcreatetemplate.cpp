@@ -116,5 +116,5 @@ void WindowCreateTemplate::showEvent(QShowEvent*) {
 }
 
 void WindowCreateTemplate::hideEvent(QHideEvent*) {
-    //delete m_lst;
+    m_lst->resetLists();
 }

@@ -242,3 +242,11 @@ QLabel* TemplateList::getFirstWidget() {
     QLabel* lblPix = wgt->findChild<QLabel*>("icon");
     return lblPix;
 }
+
+void TemplateList::slotMakeItem(QPixmap pix, QString str) {
+    makeListItem(pix, str);
+}
+
+void TemplateList::clear() {
+    m_listWidget->clear();
+}

@@ -12,6 +12,8 @@
 #include <QPushButton>
 #include <QListWidget>
 
+// ============================== Program list class ============================
+
 ProgramLst::ProgramLst(QWidget* wgt)
     : QWidget(wgt), mainWgt(wgt)
 {
@@ -33,79 +35,10 @@ ProgramLst::ProgramLst(QWidget* wgt)
 
 void ProgramLst::getProgramList() {
 
-    // path to programs at windows start menu
-    QString winDirPath("C:/ProgramData/Microsoft"
-                       "/Windows/Start Menu/Programs");
-
-    // Username definition. Only windows since
-    // I have not worked in other environments and
-    // do not know how they work
-    QString name = qgetenv("USER");
-    if (name.isEmpty())
-        name = qgetenv("USERNAME");
-
-    // path to programs at user start menu
-    QString userDirPath(QString("C:/Users/%1/AppData"
-                                "/Roaming/Microsoft/Windows"
-                                "/Start Menu/Programs").arg(name));
-
-    QDir dir(winDirPath);
-
-    QFileInfoList fileInfoList = dir.entryInfoList();
-    fileInfoList.pop_front();
-    fileInfoList.pop_front();
-
-    int i = 0;
-    foreach(QFileInfo fileDir, fileInfoList) {
-        if (fileDir.isDir()) {
-            fileInfoList.erase(fileInfoList.begin()+i);
-            fileInfoList.append(getFullDirPath(fileDir.filePath()));
-            --i;
-        }
-        ++i;
-    }
-
-    //========= filter for programs===============
-    QStringList filter;
-    QString pathFilter(QApplication::applicationDirPath()+
-                       "/icons/Filter.txt");
-    QFile file(pathFilter);
-    file.open(QFile::ReadOnly);
-
-    filter << QString(file.readAll()).split(' ');
-    //qDebug() << filter;
-    //===========================================
-
-
-    foreach(QFileInfo file, fileInfoList) {
-        if (file.isFile() && file.fileName().endsWith(".lnk")) {
-            QFileIconProvider provider;
-
-            QString programName = file.fileName().replace(".lnk", "");
-
-            bool check = 1;
-            foreach(QString str, filter) {
-                if (programName.toLower().contains(str)) {
-                    check = 0;
-                    break;
-                }
-            }
-            if (!check)
-                continue;
-
-            file.setFile(file.canonicalFilePath());
-            QPixmap programIcon = provider.icon(file).pixmap(16,16);
-
-            if (programName.size() > 40)
-                programName.resize(40);
-
-            m_programAddList->makeListItem(programIcon, programName);
-        }
-    }
-
-
-    //dir.setPath(userDirPath);
-    //fileInfoList = dir.entryInfoList();
+    ThreadProgramList* thread = new ThreadProgramList(m_listProgram);
+    connect(thread, SIGNAL(readyMakeItem(QPixmap, QString)),
+            m_programAddList, SLOT(slotMakeItem(QPixmap, QString)));
+    thread->start();
 }
 
 void ProgramLst::slotAddItem(QPushButton* btn) {
@@ -128,7 +61,15 @@ QPixmap ProgramLst::getFirstItemPix() {
     return pix;
 }
 
-QFileInfoList ProgramLst::getFullDirPath(QString path) {
+void ProgramLst::resetLists() {
+    m_programAddList->clear();
+    m_programRemoveList->clear();
+}
+
+// ===========================================================================
+// ============================= friend functions ==============================
+
+QFileInfoList getFullDirPath(QString path) {
     QFileInfoList strList;
 
     QDir dir(path);
@@ -148,3 +89,92 @@ QFileInfoList ProgramLst::getFullDirPath(QString path) {
     }
     return strList;
 }
+
+//===================================================================
+//========================== Thread class ===============================
+
+ThreadProgramList::ThreadProgramList(QFileInfoList& list)
+    : m_list(list) {
+
+}
+
+ThreadProgramList::ThreadProgramList() {
+
+}
+
+void ThreadProgramList::run() {
+    // path to programs at windows start menu
+    QString winDirPath("C:/ProgramData/Microsoft"
+                       "/Windows/Start Menu/Programs");
+
+    // Username definition. Only windows since
+    // I have not worked in other environments and
+    // do not know how they work
+    QString name = qgetenv("USER");
+    if (name.isEmpty())
+        name = qgetenv("USERNAME");
+
+    // path to programs at user start menu
+    QString userDirPath(QString("C:/Users/%1/AppData"
+                                "/Roaming/Microsoft/Windows"
+                                "/Start Menu/Programs").arg(name));
+
+    QDir dir(winDirPath);
+
+    m_list = dir.entryInfoList();
+    m_list.pop_front();
+    m_list.pop_front();
+
+    int i = 0;
+    foreach(QFileInfo fileDir, m_list) {
+        if (fileDir.isDir()) {
+            m_list.erase(m_list.begin()+i);
+            m_list.append(getFullDirPath(fileDir.filePath()));
+            --i;
+        }
+        ++i;
+    }
+
+    //========= filter for programs===============
+    QStringList filter;
+    QString pathFilter(QApplication::applicationDirPath()+
+                       "/icons/Filter.txt");
+    QFile file(pathFilter);
+    file.open(QFile::ReadOnly);
+
+    filter << QString(file.readAll()).split(' ');
+    //===========================================
+
+
+    foreach(QFileInfo file, m_list) {
+        if (file.isFile() && file.fileName().endsWith(".lnk")) {
+            QFileIconProvider provider;
+
+            QString programName = file.fileName().replace(".lnk", "");
+
+            bool check = 1;
+            foreach(QString str, filter) {
+                if (programName.toLower().contains(str)) {
+                    check = 0;
+                    break;
+                }
+            }
+            if (!check)
+                continue;
+
+            file.setFile(file.canonicalFilePath());
+            QPixmap programIcon = provider.icon(file).pixmap(16,16);
+
+            if (programName.size() > 40)
+                programName.resize(40);
+
+            //m_programAddList->makeListItem(programIcon, programName);
+            emit readyMakeItem(programIcon, programName);
+        }
+    }
+
+
+    //dir.setPath(userDirPath);
+    //fileInfoList = dir.entryInfoList();
+}
+// ==============================================================

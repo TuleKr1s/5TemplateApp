@@ -29,6 +29,7 @@ public:
     int getCountListItems();
     QLabel* getFirstWidget();
 
+    void clear();
 private:
     QWidget* mainWgt;
     QString dirPath;
@@ -50,6 +51,9 @@ private:
     int count;
 
     flags m_currentFlag;
+
+public slots:
+    void slotMakeItem(QPixmap, QString);
 
 private slots:
     void slotMouseEnter();
