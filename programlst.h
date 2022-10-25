@@ -13,7 +13,7 @@ public:
     ProgramLst(QWidget* wgt = 0);
 
     QPixmap getFirstItemPix();
-
+    void getProgramList();
 private:
     QWidget* mainWgt;
 
@@ -21,7 +21,7 @@ private:
     TemplateList* m_programAddList;
     TemplateList* m_programRemoveList;
 
-    void getProgramList();
+    QFileInfoList getFullDirPath(QString);
 
 private slots:
     void slotAddItem(QPushButton*);

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 
+class ThreadTest;
 class ProgramLst;
 class QLineEdit;
 class QLabel;
@@ -30,6 +31,10 @@ private:
     QLabel* strError15;
 
     ProgramLst* m_lst;
+
+protected:
+    virtual void showEvent(QShowEvent*);
+    virtual void hideEvent(QHideEvent*);
 
 private slots:
     void slotSendCreateSignal();

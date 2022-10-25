@@ -23,8 +23,6 @@ ProgramLst::ProgramLst(QWidget* wgt)
     connect(m_programRemoveList, SIGNAL(btnRemoveClicked(QPushButton*)),
             SLOT(slotRemoveItem(QPushButton*)));
 
-    getProgramList();
-
 
     QHBoxLayout* box = new QHBoxLayout;
     box->addWidget(m_programAddList);
@@ -54,18 +52,17 @@ void ProgramLst::getProgramList() {
     QDir dir(winDirPath);
 
     QFileInfoList fileInfoList = dir.entryInfoList();
+    fileInfoList.pop_front();
+    fileInfoList.pop_front();
 
+    int i = 0;
     foreach(QFileInfo fileDir, fileInfoList) {
         if (fileDir.isDir()) {
-            winDirPath = fileDir.filePath();
-            dir = winDirPath;
-            fileInfoList.append(dir.entryInfoList());
+            fileInfoList.erase(fileInfoList.begin()+i);
+            fileInfoList.append(getFullDirPath(fileDir.filePath()));
+            --i;
         }
-    }
-    foreach(QFileInfo file, fileInfoList) {
-        if (file.isFile() && file.fileName().endsWith(".lnk")) {
-            m_listProgram.append(file);
-        }
+        ++i;
     }
 
     //========= filter for programs===============
@@ -80,28 +77,30 @@ void ProgramLst::getProgramList() {
     //===========================================
 
 
-    foreach(QFileInfo file, m_listProgram) {
-        QFileIconProvider provider;
+    foreach(QFileInfo file, fileInfoList) {
+        if (file.isFile() && file.fileName().endsWith(".lnk")) {
+            QFileIconProvider provider;
 
-        QString programName = file.fileName().replace(".lnk", "");
+            QString programName = file.fileName().replace(".lnk", "");
 
-        bool check = 1;
-        foreach(QString str, filter) {
-            if (programName.toLower().contains(str)) {
-                check = 0;
-                break;
+            bool check = 1;
+            foreach(QString str, filter) {
+                if (programName.toLower().contains(str)) {
+                    check = 0;
+                    break;
+                }
             }
+            if (!check)
+                continue;
+
+            file.setFile(file.canonicalFilePath());
+            QPixmap programIcon = provider.icon(file).pixmap(16,16);
+
+            if (programName.size() > 40)
+                programName.resize(40);
+
+            m_programAddList->makeListItem(programIcon, programName);
         }
-        if (!check)
-            continue;
-
-        file.setFile(file.canonicalFilePath());
-        QPixmap programIcon = provider.icon(file).pixmap(16,16);
-
-        if (programName.size() > 40)
-            programName.resize(40);
-
-        m_programAddList->makeListItem(programIcon, programName);
     }
 
 
@@ -127,4 +126,25 @@ QPixmap ProgramLst::getFirstItemPix() {
     QLabel* lblPix = m_programRemoveList->getFirstWidget();
     QPixmap pix = lblPix->pixmap();
     return pix;
+}
+
+QFileInfoList ProgramLst::getFullDirPath(QString path) {
+    QFileInfoList strList;
+
+    QDir dir(path);
+    QFileInfoList fileList = dir.entryInfoList();
+    fileList.pop_front();
+    fileList.pop_front();
+    foreach(QFileInfo file, fileList) {
+        if (file.isDir()) {
+            strList.append(getFullDirPath(file.filePath()));
+        }
+        else {
+            strList.append(QDir(file.path()).entryInfoList());
+            strList.pop_front();
+            strList.pop_front();
+        }
+        break;
+    }
+    return strList;
 }

@@ -110,3 +110,11 @@ void WindowCreateTemplate::slotSendCreateSignal() {
     QPixmap pix = m_lst->getFirstItemPix();
     emit createClicked(pix);
 }
+
+void WindowCreateTemplate::showEvent(QShowEvent*) {
+    m_lst->getProgramList();
+}
+
+void WindowCreateTemplate::hideEvent(QHideEvent*) {
+    //delete m_lst;
+}

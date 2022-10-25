@@ -15,7 +15,12 @@ TemplateList::TemplateList(QWidget* wgt, flags flag)
 {
     m_listWidget = new QListWidget;
 
-    m_listWidget->setDragDropMode(QAbstractItemView::InternalMove);
+    if (m_currentFlag == PROGRAM_LIST_REMOVE) {
+        m_listWidget->setDragDropMode(QAbstractItemView::InternalMove);
+        m_listWidget->setDefaultDropAction(Qt::TargetMoveAction);
+        m_listWidget->setMovement(QListView::Free);
+    }
+
 
     dirPath = QApplication::applicationDirPath()+
             "/icons/";
@@ -124,7 +129,7 @@ void TemplateList::makeListItem(QPixmap icon, QString name)
 
     // template icon
     if (m_currentFlag == TEMPLATE_LIST)
-        icon = icon.scaled(icon.size()/16);
+        icon = icon.scaled(icon.size()*2, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     m_lblIcon = new QLabel(temp);
     m_lblIcon->setPixmap(icon);
     m_lblIcon->setObjectName("icon");
@@ -159,6 +164,7 @@ void TemplateList::makeListItem(QPixmap icon, QString name)
     QListWidgetItem* item = new QListWidgetItem(m_listWidget);
     item->setSizeHint(temp->sizeHint());
     m_listWidget->setItemWidget(item, temp);
+
     arr[count] = item;
 
 
@@ -232,5 +238,7 @@ void TemplateList::slotSendSignal() {
 }
 
 QLabel* TemplateList::getFirstWidget() {
-    return m_lblIcon;
+    MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(m_listWidget->item(0));
+    QLabel* lblPix = wgt->findChild<QLabel*>("icon");
+    return lblPix;
 }
