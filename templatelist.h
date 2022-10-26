@@ -2,14 +2,12 @@
 #define TEMPLATELIST_H
 
 #include <QWidget>
+#include <QListWidgetItem>
 
 class MyWidget;
 class QListWidget;
-class QListWidgetItem;
 class QLabel;
 class QPushButton;
-
-
 
 class TemplateList : public QWidget
 {
@@ -28,6 +26,8 @@ public:
     void makeListItem(QLabel*, QLabel*);
     int getCountListItems();
     QLabel* getFirstWidget();
+
+    bool isEmpty();
 
     void clear();
 private:
@@ -58,15 +58,30 @@ public slots:
 private slots:
     void slotMouseEnter();
     void slotMouseLeave();
+
     void slotItemDelete();
+    void slotItemDelete(QListWidgetItem*);
 
     void slotSendSignal();
+    void slotSendSignal(QListWidgetItem*);
 
 
 signals:
     void countListItemsChanged(int);
     void btnAddClicked(QPushButton*);
     void btnRemoveClicked(QPushButton*);
+};
+
+// for sorting items int widget list
+class MyListWidgetItem : public QListWidgetItem {
+public:
+    MyListWidgetItem(QListWidget* list)
+        : QListWidgetItem(list) {}
+
+    bool operator<(const QListWidgetItem& item) const {
+        return this->data(-1).toString() < item.data(-1).toString();
+    }
+
 };
 
 #endif // TEMPLATELIST_H

@@ -17,6 +17,8 @@ public:
     void getProgramList();
     void resetLists();
 
+    bool isRemoveListEmpty();
+
     friend QFileInfoList getFullDirPath(QString);
 private:
     QWidget* mainWgt;

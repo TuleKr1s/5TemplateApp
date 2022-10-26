@@ -3,7 +3,6 @@
 
 #include <QWidget>
 
-class ThreadTest;
 class ProgramLst;
 class QLineEdit;
 class QLabel;
@@ -17,6 +16,8 @@ public:
 
     QString getTemplateName();
     void setTemplateName(QString);
+
+    QString checkError();
 private:
     QWidget* mainWgt;
 
@@ -29,8 +30,10 @@ private:
 
     QLabel* strError0;
     QLabel* strError15;
+    QLabel* strErrorNoItem;
 
     ProgramLst* m_lst;
+
 
 protected:
     virtual void showEvent(QShowEvent*);

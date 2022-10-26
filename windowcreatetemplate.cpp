@@ -54,9 +54,11 @@ WindowCreateTemplate::WindowCreateTemplate(QWidget* wgt)
     // text input errors==========================
     strError0 = new QLabel("Enter a template name!");
     strError15 = new QLabel("Template name must not exceed 16 characters!");
+    strErrorNoItem = new QLabel("Choose apps!");
 
     strError0->setObjectName("error0");
     strError15->setObjectName("error15");
+    strErrorNoItem->setObjectName("errorNoItem");
     //===================================
 
     m_lst = new ProgramLst(mainWgt);
@@ -70,6 +72,7 @@ WindowCreateTemplate::WindowCreateTemplate(QWidget* wgt)
     box->addWidget(m_lineName);
     box->addWidget(strError0);
     box->addWidget(strError15);
+    box->addWidget(strErrorNoItem);
     box->addStretch();
     box->addLayout(btnBox);
     box->addStretch();
@@ -77,17 +80,19 @@ WindowCreateTemplate::WindowCreateTemplate(QWidget* wgt)
     setLayout(box);
 
     // main layout
-    QHBoxLayout* mainBox = new QHBoxLayout;
+    //QHBoxLayout* mainBox = new QHBoxLayout;
 
     //setLayout(mainBox);
 
     strError0->hide();
     strError15->hide();
+    strErrorNoItem->hide();
 }
 
-QString WindowCreateTemplate::getTemplateName() {
+QString WindowCreateTemplate::checkError() {
     strError0->hide();
     strError15->hide();
+    strErrorNoItem->hide();
     if (m_lineName->text().size() == 0) {
         strError0->show();
         return "error";
@@ -96,17 +101,30 @@ QString WindowCreateTemplate::getTemplateName() {
         strError15->show();
         return "error";
     }
+    if (m_lst->isRemoveListEmpty()) {
+        strErrorNoItem->show();
+        return "error";
+    }
 
+    return "";
+}
+
+QString WindowCreateTemplate::getTemplateName() {
     return m_lineName->text();
 }
 
 void WindowCreateTemplate::setTemplateName(QString str) {
     strError0->hide();
     strError15->hide();
+    strErrorNoItem->hide();
     m_lineName->setText(str);
 }
 
 void WindowCreateTemplate::slotSendCreateSignal() {
+    if (!checkError().isEmpty()) {
+        return;
+    }
+
     QPixmap pix = m_lst->getFirstItemPix();
     emit createClicked(pix);
 }

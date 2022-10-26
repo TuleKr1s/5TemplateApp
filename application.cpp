@@ -48,16 +48,18 @@ void Application::showMainTab() {
 
     m_mainTab->show();
 
-    QPropertyAnimation* anim = new QPropertyAnimation(m_wndCreate,"pos");
-    int x = width();
-    int y = 0;
-    anim->setDuration(125);
-    anim->setStartValue(QPoint(x-m_wndCreate->width(), y));
-    anim->setEndValue(QPoint(x,y));
-    anim->start(QAbstractAnimation::DeleteWhenStopped);
+    if (!m_wndCreate->isHidden()) {
+        QPropertyAnimation* anim = new QPropertyAnimation(m_wndCreate,"pos");
+        int x = width();
+        int y = 0;
+        anim->setDuration(125);
+        anim->setStartValue(QPoint(x-m_wndCreate->width(), y));
+        anim->setEndValue(QPoint(x,y));
+        anim->start(QAbstractAnimation::DeleteWhenStopped);
 
-    m_wndCreate->setTemplateName("");
-    connect(anim, SIGNAL(finished()), m_wndCreate, SLOT(hide()));
+        m_wndCreate->setTemplateName("");
+        connect(anim, SIGNAL(finished()), m_wndCreate, SLOT(hide()));
+    }
 }
 
 void Application::showCreateWnd() {
@@ -80,7 +82,8 @@ void Application::slotCreate(QPixmap pix) {
 
     //QPixmap pix(dirPath+"/icons/template icons/"+lstIcons[countIcon].fileName());
     QString name = m_wndCreate->getTemplateName();
-    if (name != "error") {
+    QString error = m_wndCreate->checkError();
+    if (error.isEmpty()) {
         m_mainTab->makeListItem(pix, name);
         ++countIcon;
         showMainTab();

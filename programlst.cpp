@@ -90,6 +90,10 @@ QFileInfoList getFullDirPath(QString path) {
     return strList;
 }
 
+bool ProgramLst::isRemoveListEmpty() {
+    return m_programRemoveList->isEmpty();
+}
+
 //===================================================================
 //========================== Thread class ===============================
 

@@ -23,6 +23,8 @@ MainTab::MainTab(QWidget* wgt)
 
     connect(m_btnCreate, SIGNAL(clicked()), SIGNAL(createClicked()));
 
+
+
     QPixmap AddIcon(dirPath+"open.png");
     QPixmap createIcon(dirPath+"create.png");
 

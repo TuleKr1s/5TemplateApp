@@ -8,12 +8,19 @@
 #include <QApplication>
 #include <QFile>
 #include <QVector>
+#include <QMouseEvent>
 
+//========================= Template list class ======================
 
 TemplateList::TemplateList(QWidget* wgt, flags flag)
     : QWidget(wgt), mainWgt(wgt), m_currentFlag(flag)
 {
     m_listWidget = new QListWidget;
+
+    m_listWidget->setFocusPolicy(Qt::NoFocus);
+
+    connect(m_listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+            SLOT(slotSendSignal(QListWidgetItem*)));
 
     if (m_currentFlag == PROGRAM_LIST_REMOVE) {
         m_listWidget->setDragDropMode(QAbstractItemView::InternalMove);
@@ -138,6 +145,7 @@ void TemplateList::makeListItem(QPixmap icon, QString name)
     m_lblName = new QLabel(name, temp);
     m_lblName->setObjectName("templateName");
 
+    //======================= layout settings ===========================
     QHBoxLayout* box = new QHBoxLayout;
     box->addWidget(m_lblIcon);
     box->addSpacing(5);
@@ -160,13 +168,20 @@ void TemplateList::makeListItem(QPixmap icon, QString name)
     m_btnDelete->hide();
     m_btnAdd->hide();
     m_btnRemove->hide();
+    //==============================================
 
-    QListWidgetItem* item = new QListWidgetItem(m_listWidget);
+    // ==================== list widget settings ====================
+    MyListWidgetItem* item = new MyListWidgetItem(m_listWidget);
+    // what is the sorting parameter
+    item->setData(-1, m_lblName->text());
+
     item->setSizeHint(temp->sizeHint());
     m_listWidget->setItemWidget(item, temp);
-
     arr[count] = item;
 
+    if (m_currentFlag == PROGRAM_LIST_ADD)
+        m_listWidget->sortItems();
+    //========================================================
 
     emit countListItemsChanged(m_listWidget->count());
     ++count;
@@ -224,17 +239,39 @@ void TemplateList::slotItemDelete() {
     int row = m_listWidget->row(item);
     delete m_listWidget->takeItem(row);
 
+    emit countListItemsChanged(m_listWidget->count());
+}
 
+void TemplateList::slotItemDelete(QListWidgetItem* item) {
+
+    delete m_listWidget->takeItem(m_listWidget->row(item));
 
     emit countListItemsChanged(m_listWidget->count());
 }
 
-void TemplateList::slotSendSignal() {
-    QPushButton* btn = (QPushButton*)sender();
-    if (btn->objectName() == "btnAdd")
+void TemplateList::slotSendSignal(QListWidgetItem* item) {
+
+    MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(item);
+    QPushButton* btn;
+    if (m_currentFlag == PROGRAM_LIST_ADD) {
+        btn = wgt->findChild<QPushButton*>("btnAdd");
         emit btnAddClicked(btn);
-    else if (btn->objectName() == "btnRemove")
+    }
+    else if (m_currentFlag == PROGRAM_LIST_REMOVE) {
+        btn = wgt->findChild<QPushButton*>("btnRemove");
         emit btnRemoveClicked(btn);
+    }
+    slotItemDelete(item);
+}
+
+void TemplateList::slotSendSignal() {
+    QPushButton* btn = qobject_cast<QPushButton*>(sender());
+    if (btn) {
+        if (btn->objectName() == "btnAdd")
+            emit btnAddClicked(btn);
+        else if (btn->objectName() == "btnRemove")
+            emit btnRemoveClicked(btn);
+    }
 }
 
 QLabel* TemplateList::getFirstWidget() {
@@ -250,3 +287,27 @@ void TemplateList::slotMakeItem(QPixmap pix, QString str) {
 void TemplateList::clear() {
     m_listWidget->clear();
 }
+
+bool TemplateList::isEmpty() {
+    if (m_listWidget->count())
+        return false;
+    return true;
+}
+
+// ==============================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
