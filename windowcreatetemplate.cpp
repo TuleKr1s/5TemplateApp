@@ -8,6 +8,7 @@
 #include <QApplication>
 #include <QFile>
 #include <QFileDialog>
+#include <QSettings>
 
 WindowCreateTemplate::WindowCreateTemplate(QWidget* wgt)
     : QWidget(wgt), mainWgt(wgt)
@@ -32,8 +33,19 @@ WindowCreateTemplate::WindowCreateTemplate(QWidget* wgt)
     m_lblName->setBuddy(m_lineName);
 
 
-
     //================buttons settings================
+
+    // button add program to program list
+    m_btnAddProgram = new QPushButton("&Add program...");
+
+    connect(m_btnAddProgram, SIGNAL(clicked()),
+            SLOT(slotAddProgramToList()));
+
+    QHBoxLayout* btnAddBox = new QHBoxLayout;
+    btnAddBox->addWidget(m_btnAddProgram);
+    btnAddBox->addStretch();
+
+    // buttons create template or cancel
     m_btnCreate = new QPushButton("&Create");
     m_btnCancel = new QPushButton("C&ancel");
 
@@ -66,6 +78,8 @@ WindowCreateTemplate::WindowCreateTemplate(QWidget* wgt)
     QVBoxLayout* box = new QVBoxLayout;
     //temp
     box->addWidget(m_lst);
+
+    box->addLayout(btnAddBox);
 
     box->addStretch();
     box->addWidget(m_lblName);
@@ -135,4 +149,30 @@ void WindowCreateTemplate::showEvent(QShowEvent*) {
 
 void WindowCreateTemplate::hideEvent(QHideEvent*) {
     m_lst->resetLists();
+}
+
+// variable for the number of items stored in the registry
+int i = 0;
+void WindowCreateTemplate::slotAddProgramToList() {
+    QStringList listPath = QFileDialog::getOpenFileNames(0,
+                                                         "Choose the apps",
+                                                         "", "*.exe *.lnk");
+
+
+    // saving the programs added to the list to the registry
+    QSettings settings("5TuleKrisov", "5TemplateApp");
+
+    settings.setValue("/Settings/size", i);
+    foreach(QString path, listPath) {
+        ++i;
+        m_lst->addProgramToAddList(path);
+        settings.setValue(QString("/Settings/%1/Path").arg(i), path);
+        settings.setValue("/Settings/size", i);
+    }
+    //======================================
+
+}
+
+QVector<QString> WindowCreateTemplate::getListPath() {
+    return m_lst->getRemoveListPath();
 }

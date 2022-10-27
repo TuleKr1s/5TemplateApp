@@ -2,7 +2,10 @@
 #define WINDOWCREATETEMPLATE_H
 
 #include <QWidget>
+#include <QFile>
+#include <QVector>
 
+class QListWidgetItem;
 class ProgramLst;
 class QLineEdit;
 class QLabel;
@@ -17,6 +20,8 @@ public:
     QString getTemplateName();
     void setTemplateName(QString);
 
+    QVector<QString> getListPath();
+
     QString checkError();
 private:
     QWidget* mainWgt;
@@ -24,6 +29,7 @@ private:
     QLineEdit* m_lineName;
     QLabel* m_lblName;
 
+    QPushButton* m_btnAddProgram;
 
     QPushButton* m_btnCreate;
     QPushButton* m_btnCancel;
@@ -35,6 +41,7 @@ private:
     ProgramLst* m_lst;
 
 
+
 protected:
     virtual void showEvent(QShowEvent*);
     virtual void hideEvent(QHideEvent*);
@@ -42,9 +49,12 @@ protected:
 private slots:
     void slotSendCreateSignal();
 
+    void slotAddProgramToList();
+
 signals:
     void createClicked(QPixmap);
     void cancelClicked();
+
 
 };
 

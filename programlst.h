@@ -6,6 +6,9 @@
 #include <QWidget>
 #include <QFileInfo>
 #include <QThread>
+#include <QListWidget>
+
+class QListWidgetItem;
 
 class ProgramLst : public QWidget
 {
@@ -18,6 +21,10 @@ public:
     void resetLists();
 
     bool isRemoveListEmpty();
+
+    void addProgramToAddList(QString);
+
+    QVector<QString> getRemoveListPath();
 
     friend QFileInfoList getFullDirPath(QString);
 private:
@@ -47,7 +54,7 @@ private:
     QFileInfoList m_list;
 
 signals:
-    void readyMakeItem(QPixmap, QString);
+    void readyMakeItem(QPixmap, QString, QString);
 };
 
 #endif // PROGRAMLST_H

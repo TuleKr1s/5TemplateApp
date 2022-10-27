@@ -21,10 +21,6 @@ private:
     WindowCreateTemplate* m_wndCreate;
     WindowFrame* m_frame;
 
-    QFileInfoList lstIcons;
-
-    int countIcon;
-
     QString dirPath = QApplication::applicationDirPath();
 
 private slots:

@@ -60,8 +60,9 @@ void TemplateList::makeListItem(QLabel* lblIcon, QLabel* lblName) {
     makeListItem(pix, name);
 }
 
-void TemplateList::makeListItem(QPixmap icon, QString name)
+void TemplateList::makeListItem(QPixmap icon, QString name, QString path)
 {
+    listPath << path;
 
     arr.resize(count+1);
     // widget at widget list
@@ -239,12 +240,15 @@ void TemplateList::slotItemDelete() {
     int row = m_listWidget->row(item);
     delete m_listWidget->takeItem(row);
 
+
     emit countListItemsChanged(m_listWidget->count());
 }
 
 void TemplateList::slotItemDelete(QListWidgetItem* item) {
 
     delete m_listWidget->takeItem(m_listWidget->row(item));
+
+
 
     emit countListItemsChanged(m_listWidget->count());
 }
@@ -274,14 +278,14 @@ void TemplateList::slotSendSignal() {
     }
 }
 
-QLabel* TemplateList::getFirstWidget() {
+QLabel* TemplateList::getFirstWidgetPix() {
     MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(m_listWidget->item(0));
     QLabel* lblPix = wgt->findChild<QLabel*>("icon");
     return lblPix;
 }
 
-void TemplateList::slotMakeItem(QPixmap pix, QString str) {
-    makeListItem(pix, str);
+void TemplateList::slotMakeItem(QPixmap pix, QString str, QString path) {
+    makeListItem(pix, str, path);
 }
 
 void TemplateList::clear() {
@@ -292,6 +296,10 @@ bool TemplateList::isEmpty() {
     if (m_listWidget->count())
         return false;
     return true;
+}
+
+QVector<QString> TemplateList::getListPath() {
+    return listPath;
 }
 
 // ==============================================================

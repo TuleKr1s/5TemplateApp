@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QPropertyAnimation>
+#include <QListWidget>
 
 Application::Application(QWidget* wgt)
     : QWidget(wgt)
@@ -12,21 +13,14 @@ Application::Application(QWidget* wgt)
 
     setGeometry(QRect(QPoint(590,236), QSize(800, 600)));
 
-    // variable for icons
-    countIcon = 0;
-
     m_mainTab = new MainTab(this);
     m_wndCreate = new WindowCreateTemplate(this);
     m_frame = new WindowFrame(this);
 
     connect(m_mainTab,SIGNAL(createClicked()),SLOT(showCreateWnd()));
     connect(m_wndCreate, SIGNAL(cancelClicked()), SLOT(showMainTab()));
-    connect(m_wndCreate, SIGNAL(createClicked(QPixmap)), SLOT(slotCreate(QPixmap)));
-
-    // initialization list with icons
-    lstIcons = QDir(dirPath+"/icons/template icons").entryInfoList();
-    lstIcons.pop_front();
-    lstIcons.pop_front();
+    connect(m_wndCreate, SIGNAL(createClicked(QPixmap)),
+            SLOT(slotCreate(QPixmap)));
 
     //qss style
     QFile file(dirPath+"/icons/appStyle.qss");
@@ -77,18 +71,39 @@ void Application::showCreateWnd() {
 }
 
 void Application::slotCreate(QPixmap pix) {
-    if (countIcon == lstIcons.size())
-        countIcon = 0;
+    QString error = m_wndCreate->checkError();
+    if (!error.isEmpty()) {
+        return;
+    }
 
     //QPixmap pix(dirPath+"/icons/template icons/"+lstIcons[countIcon].fileName());
     QString name = m_wndCreate->getTemplateName();
-    QString error = m_wndCreate->checkError();
-    if (error.isEmpty()) {
-        m_mainTab->makeListItem(pix, name);
-        ++countIcon;
-        showMainTab();
-        m_wndCreate->setTemplateName("");
+
+    // save template to .tff (template file format)
+    QFile fileSaveTemplate(QApplication::applicationDirPath()
+                           +QString("/Saves/%1.tff").arg(name));
+    if (!fileSaveTemplate.open(QFile::WriteOnly)) {
+        return;
     }
+
+    QDataStream stream(&fileSaveTemplate);
+    stream.setVersion(QDataStream::Qt_6_2);
+    stream << name << pix;
+
+    fileSaveTemplate.close();
+    fileSaveTemplate.open(QFile::ReadOnly);
+
+    QString newName;
+    QPixmap newPix;
+
+    stream >> newName >> newPix;
+
+    m_mainTab->makeListItem(newPix, newName);
+    showMainTab();
+    m_wndCreate->setTemplateName("");
+
+
+
 }
 
 

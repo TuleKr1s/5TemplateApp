@@ -11,6 +11,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QListWidget>
+#include <QSettings>
 
 // ============================== Program list class ============================
 
@@ -36,8 +37,8 @@ ProgramLst::ProgramLst(QWidget* wgt)
 void ProgramLst::getProgramList() {
 
     ThreadProgramList* thread = new ThreadProgramList(m_listProgram);
-    connect(thread, SIGNAL(readyMakeItem(QPixmap, QString)),
-            m_programAddList, SLOT(slotMakeItem(QPixmap, QString)));
+    connect(thread, SIGNAL(readyMakeItem(QPixmap, QString, QString)),
+            m_programAddList, SLOT(slotMakeItem(QPixmap, QString, QString)));
     thread->start();
 }
 
@@ -56,7 +57,7 @@ void ProgramLst::slotRemoveItem(QPushButton* btn) {
 }
 
 QPixmap ProgramLst::getFirstItemPix() {
-    QLabel* lblPix = m_programRemoveList->getFirstWidget();
+    QLabel* lblPix = m_programRemoveList->getFirstWidgetPix();
     QPixmap pix = lblPix->pixmap();
     return pix;
 }
@@ -64,6 +65,29 @@ QPixmap ProgramLst::getFirstItemPix() {
 void ProgramLst::resetLists() {
     m_programAddList->clear();
     m_programRemoveList->clear();
+}
+
+bool ProgramLst::isRemoveListEmpty() {
+    return m_programRemoveList->isEmpty();
+}
+
+void ProgramLst::addProgramToAddList(QString path) {
+    QFileInfo file(path);
+
+    file.setFile(file.canonicalFilePath());
+
+    QFileIconProvider provider;
+    QPixmap pix = provider.icon(file).pixmap(16,16);
+
+    QString name = file.fileName();
+    name = name.replace(".lnk", "");
+    name = name.replace(".exe", "");
+
+    m_programAddList->makeListItem(pix, name);
+}
+
+QVector<QString> ProgramLst::getRemoveListPath() {
+    return m_programRemoveList->getListPath();
 }
 
 // ===========================================================================
@@ -90,9 +114,7 @@ QFileInfoList getFullDirPath(QString path) {
     return strList;
 }
 
-bool ProgramLst::isRemoveListEmpty() {
-    return m_programRemoveList->isEmpty();
-}
+
 
 //===================================================================
 //========================== Thread class ===============================
@@ -114,14 +136,14 @@ void ThreadProgramList::run() {
     // Username definition. Only windows since
     // I have not worked in other environments and
     // do not know how they work
-    QString name = qgetenv("USER");
-    if (name.isEmpty())
-        name = qgetenv("USERNAME");
+//    QString name = qgetenv("USER");
+//    if (name.isEmpty())
+//        name = qgetenv("USERNAME");
 
     // path to programs at user start menu
-    QString userDirPath(QString("C:/Users/%1/AppData"
-                                "/Roaming/Microsoft/Windows"
-                                "/Start Menu/Programs").arg(name));
+//    QString userDirPath(QString("C:/Users/%1/AppData"
+//                                "/Roaming/Microsoft/Windows"
+//                                "/Start Menu/Programs").arg(name));
 
     QDir dir(winDirPath);
 
@@ -149,12 +171,26 @@ void ThreadProgramList::run() {
     filter << QString(file.readAll()).split(' ');
     //===========================================
 
+    // adding programs already added by the user before
+    QSettings settings("5TuleKrisov", "5TemplateApp");
+    settings.beginGroup("/Settings");
+        int size = settings.value("/size", 0).toInt();
+        for (int i = 1; i <= size; ++i) {
+            QString path = settings.value(QString("/%1/Path").arg(i), "").toString();
+            m_list.append(QFileInfo(path));
+        }
+    settings.endGroup();
+    //======================
+
 
     foreach(QFileInfo file, m_list) {
-        if (file.isFile() && file.fileName().endsWith(".lnk")) {
+        if (file.isFile() && (file.fileName().endsWith(".lnk")
+                              || file.fileName().endsWith(".exe"))) {
             QFileIconProvider provider;
 
+            QString programPath = file.fileName();
             QString programName = file.fileName().replace(".lnk", "");
+            programName = programName.replace(".exe", "");
 
             bool check = 1;
             foreach(QString str, filter) {
@@ -173,7 +209,7 @@ void ThreadProgramList::run() {
                 programName.resize(40);
 
             //m_programAddList->makeListItem(programIcon, programName);
-            emit readyMakeItem(programIcon, programName);
+            emit readyMakeItem(programIcon, programName, programPath);
         }
     }
 

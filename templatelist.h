@@ -22,10 +22,11 @@ public:
     TemplateList(QWidget* wgt = 0,
                  flags flag = TEMPLATE_LIST);
 
-    void makeListItem(QPixmap, QString);
+    void makeListItem(QPixmap, QString, QString path = "");
     void makeListItem(QLabel*, QLabel*);
     int getCountListItems();
-    QLabel* getFirstWidget();
+    QLabel* getFirstWidgetPix();
+    QStringList getListPath();
 
     bool isEmpty();
 
@@ -33,6 +34,7 @@ public:
 private:
     QWidget* mainWgt;
     QString dirPath;
+    QStringList listPath;
 
     QListWidget* m_listWidget;
     QLabel* m_lblName;
@@ -53,7 +55,7 @@ private:
     flags m_currentFlag;
 
 public slots:
-    void slotMakeItem(QPixmap, QString);
+    void slotMakeItem(QPixmap, QString, QString);
 
 private slots:
     void slotMouseEnter();
