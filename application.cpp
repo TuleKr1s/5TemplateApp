@@ -35,6 +35,9 @@ Application::Application(QWidget* wgt)
     mainBox->addWidget(m_wndCreate);
 
     m_wndCreate->hide();
+
+
+    loadTemplates();
 }
 
 void Application::showMainTab() {
@@ -90,6 +93,11 @@ void Application::slotCreate(QPixmap pix) {
     stream.setVersion(QDataStream::Qt_6_2);
     stream << name << pix;
 
+    QFileInfoList fileInfoList = m_wndCreate->getListPath();
+    foreach(QFileInfo file, fileInfoList) {
+        stream << file.absoluteFilePath();
+    }
+
     fileSaveTemplate.close();
     fileSaveTemplate.open(QFile::ReadOnly);
 
@@ -97,6 +105,12 @@ void Application::slotCreate(QPixmap pix) {
     QPixmap newPix;
 
     stream >> newName >> newPix;
+
+    while (!stream.atEnd()) {
+        QString str;
+        stream >> str;
+        qDebug() << str;
+    }
 
     m_mainTab->makeListItem(newPix, newName);
     showMainTab();
@@ -107,7 +121,23 @@ void Application::slotCreate(QPixmap pix) {
 }
 
 
+void Application::loadTemplates() {
+    QDir savesDir(dirPath+"/Saves");
 
+    QFileInfoList existingFiles = savesDir.entryInfoList(QDir::Files);
+    foreach(QFileInfo fileInfo, existingFiles) {
+        QFile file(fileInfo.filePath());
+        file.open(QFile::ReadOnly);
+        QDataStream stream(&file);
+
+        QString name;
+        QPixmap pix;
+
+        stream >> name >> pix;
+        m_mainTab->makeListItem(pix,name);
+        file.close();
+    }
+}
 
 
 

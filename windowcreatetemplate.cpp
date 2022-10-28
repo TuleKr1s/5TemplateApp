@@ -173,6 +173,6 @@ void WindowCreateTemplate::slotAddProgramToList() {
 
 }
 
-QVector<QString> WindowCreateTemplate::getListPath() {
+QFileInfoList WindowCreateTemplate::getListPath() {
     return m_lst->getRemoveListPath();
 }

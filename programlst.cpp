@@ -21,10 +21,17 @@ ProgramLst::ProgramLst(QWidget* wgt)
     m_programAddList = new TemplateList(mainWgt, TemplateList::PROGRAM_LIST_ADD);
     m_programRemoveList = new TemplateList(mainWgt, TemplateList::PROGRAM_LIST_REMOVE);
 
+    // connect for interaction with items
     connect(m_programAddList, SIGNAL(btnAddClicked(QPushButton*)),
             SLOT(slotAddItem(QPushButton*)));
     connect(m_programRemoveList, SIGNAL(btnRemoveClicked(QPushButton*)),
             SLOT(slotRemoveItem(QPushButton*)));
+
+    // connect for add/remove program path to list
+    connect(m_programRemoveList, SIGNAL(programAdd(QString)),
+            SLOT(slotAddPath(QString)));
+    connect(m_programRemoveList, SIGNAL(programRemove(QString, int)),
+            SLOT(slotRemovePath(QString, int)));
 
 
     QHBoxLayout* box = new QHBoxLayout;
@@ -46,14 +53,16 @@ void ProgramLst::slotAddItem(QPushButton* btn) {
     MyWidget* wgt = (MyWidget*)btn->parent();
     QLabel* pix = wgt->findChild<QLabel*>("icon");
     QLabel* name = wgt->findChild<QLabel*>("templateName");
-    m_programRemoveList->makeListItem(pix, name);
+    QLabel* path = wgt->findChild<QLabel*>("path");
+    m_programRemoveList->makeListItem(pix->pixmap(), name->text(), path->text());
 }
 
 void ProgramLst::slotRemoveItem(QPushButton* btn) {
     MyWidget* wgt = (MyWidget*)btn->parent();
     QLabel* pix = wgt->findChild<QLabel*>("icon");
     QLabel* name = wgt->findChild<QLabel*>("templateName");
-    m_programAddList->makeListItem(pix, name);
+    QLabel* path = wgt->findChild<QLabel*>("path");
+    m_programAddList->makeListItem(pix->pixmap(), name->text(), path->text());
 }
 
 QPixmap ProgramLst::getFirstItemPix() {
@@ -86,8 +95,16 @@ void ProgramLst::addProgramToAddList(QString path) {
     m_programAddList->makeListItem(pix, name);
 }
 
-QVector<QString> ProgramLst::getRemoveListPath() {
-    return m_programRemoveList->getListPath();
+void ProgramLst::slotAddPath(QString path) {
+    m_listPath.append(QFileInfo(path));
+}
+
+void ProgramLst::slotRemovePath(QString path, int index) {
+    m_listPath.erase(m_listPath.begin() + index);
+}
+
+QFileInfoList ProgramLst::getRemoveListPath() {
+    return m_listPath;
 }
 
 // ===========================================================================
@@ -188,7 +205,7 @@ void ThreadProgramList::run() {
                               || file.fileName().endsWith(".exe"))) {
             QFileIconProvider provider;
 
-            QString programPath = file.fileName();
+            QString programPath = file.filePath();
             QString programName = file.fileName().replace(".lnk", "");
             programName = programName.replace(".exe", "");
 

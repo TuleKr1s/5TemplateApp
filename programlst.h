@@ -24,13 +24,14 @@ public:
 
     void addProgramToAddList(QString);
 
-    QVector<QString> getRemoveListPath();
+    QFileInfoList getRemoveListPath();
 
     friend QFileInfoList getFullDirPath(QString);
 private:
     QWidget* mainWgt;
 
     QFileInfoList m_listProgram;
+    QFileInfoList m_listPath;
     TemplateList* m_programAddList;
     TemplateList* m_programRemoveList;
 
@@ -38,6 +39,9 @@ private:
 private slots:
     void slotAddItem(QPushButton*);
     void slotRemoveItem(QPushButton*);
+
+    void slotAddPath(QString);
+    void slotRemovePath(QString, int);
 };
 
 class ThreadProgramList : public QThread

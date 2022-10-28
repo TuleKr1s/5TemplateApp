@@ -19,8 +19,10 @@ TemplateList::TemplateList(QWidget* wgt, flags flag)
 
     m_listWidget->setFocusPolicy(Qt::NoFocus);
 
-    connect(m_listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
-            SLOT(slotSendSignal(QListWidgetItem*)));
+    if (m_currentFlag != TEMPLATE_LIST) {
+        connect(m_listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+                SLOT(slotSendSignal(QListWidgetItem*)));
+    }
 
     if (m_currentFlag == PROGRAM_LIST_REMOVE) {
         m_listWidget->setDragDropMode(QAbstractItemView::InternalMove);
@@ -62,7 +64,6 @@ void TemplateList::makeListItem(QLabel* lblIcon, QLabel* lblName) {
 
 void TemplateList::makeListItem(QPixmap icon, QString name, QString path)
 {
-    listPath << path;
 
     arr.resize(count+1);
     // widget at widget list
@@ -184,6 +185,14 @@ void TemplateList::makeListItem(QPixmap icon, QString name, QString path)
         m_listWidget->sortItems();
     //========================================================
 
+    // program path
+    m_programPath = new QLabel(temp);
+    if (!path.isEmpty()) {
+        m_programPath->setText(path);
+        m_programPath->setObjectName("path");
+
+        emit programAdd(m_programPath->text());
+    }
     emit countListItemsChanged(m_listWidget->count());
     ++count;
 }
@@ -240,17 +249,31 @@ void TemplateList::slotItemDelete() {
     int row = m_listWidget->row(item);
     delete m_listWidget->takeItem(row);
 
-
+    if (!m_programPath->text().isEmpty())
+        emit programRemove(wgt->findChild<QLabel*>("path")->text(), index);
     emit countListItemsChanged(m_listWidget->count());
+
+    if (m_currentFlag == TEMPLATE_LIST) {
+        // delete template file
+        QString name = wgt->findChild<QLabel*>("templateName")->text();
+        QFile file(QApplication::applicationDirPath()+QString("/Saves/%1.tff").arg(name));
+        file.remove();
+    }
 }
 
 void TemplateList::slotItemDelete(QListWidgetItem* item) {
 
+
+    MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(item);
+    QLabel* path = wgt->findChild<QLabel*>("path");
+
+    if (!m_programPath->text().isEmpty())
+        emit programRemove(path->text(), wgt->getIndex());
+
     delete m_listWidget->takeItem(m_listWidget->row(item));
 
-
-
     emit countListItemsChanged(m_listWidget->count());
+
 }
 
 void TemplateList::slotSendSignal(QListWidgetItem* item) {
@@ -293,14 +316,9 @@ void TemplateList::clear() {
 }
 
 bool TemplateList::isEmpty() {
-    if (m_listWidget->count())
-        return false;
-    return true;
+    return !m_listWidget->count();
 }
 
-QVector<QString> TemplateList::getListPath() {
-    return listPath;
-}
 
 // ==============================================================
 

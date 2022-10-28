@@ -23,6 +23,7 @@ private:
 
     QString dirPath = QApplication::applicationDirPath();
 
+    void loadTemplates();
 private slots:
     void showMainTab();
     void showCreateWnd();

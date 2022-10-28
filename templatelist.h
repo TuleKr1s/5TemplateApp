@@ -26,19 +26,18 @@ public:
     void makeListItem(QLabel*, QLabel*);
     int getCountListItems();
     QLabel* getFirstWidgetPix();
-    QStringList getListPath();
 
     bool isEmpty();
 
     void clear();
 private:
     QWidget* mainWgt;
-    QString dirPath;
-    QStringList listPath;
+    QString dirPath; 
 
     QListWidget* m_listWidget;
     QLabel* m_lblName;
     QLabel* m_lblIcon;
+    QLabel* m_programPath;
 
     QVector<QListWidgetItem*> arr;
 
@@ -72,6 +71,9 @@ signals:
     void countListItemsChanged(int);
     void btnAddClicked(QPushButton*);
     void btnRemoveClicked(QPushButton*);
+
+    void programAdd(QString);
+    void programRemove(QString, int);
 };
 
 // for sorting items int widget list

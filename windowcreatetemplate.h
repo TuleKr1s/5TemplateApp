@@ -2,8 +2,7 @@
 #define WINDOWCREATETEMPLATE_H
 
 #include <QWidget>
-#include <QFile>
-#include <QVector>
+#include <QFileInfoList>
 
 class QListWidgetItem;
 class ProgramLst;
@@ -20,7 +19,7 @@ public:
     QString getTemplateName();
     void setTemplateName(QString);
 
-    QVector<QString> getListPath();
+    QFileInfoList getListPath();
 
     QString checkError();
 private:

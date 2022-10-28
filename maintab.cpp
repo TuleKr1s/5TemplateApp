@@ -21,6 +21,8 @@ MainTab::MainTab(QWidget* wgt)
     m_btnCreate = new QPushButton("&Create new \ntemplate");
     m_btnAddExisting = new QPushButton("&Add an existing \ntemplate...");
 
+
+
     connect(m_btnCreate, SIGNAL(clicked()), SIGNAL(createClicked()));
 
 
