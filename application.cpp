@@ -99,20 +99,22 @@ void Application::slotCreate(QPixmap pix) {
     }
 
     fileSaveTemplate.close();
-    fileSaveTemplate.open(QFile::ReadOnly);
+    //=====================================
 
-    QString newName;
-    QPixmap newPix;
+//    fileSaveTemplate.open(QFile::ReadOnly);
 
-    stream >> newName >> newPix;
+//    QString newName;
+//    QPixmap newPix;
 
-    while (!stream.atEnd()) {
-        QString str;
-        stream >> str;
-        qDebug() << str;
-    }
+//    stream >> newName >> newPix;
 
-    m_mainTab->makeListItem(newPix, newName);
+//    while (!stream.atEnd()) {
+//        QString str;
+//        stream >> str;
+//        qDebug() << str;
+//    }
+
+    m_mainTab->makeListItem(pix, name);
     showMainTab();
     m_wndCreate->setTemplateName("");
 

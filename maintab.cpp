@@ -21,11 +21,7 @@ MainTab::MainTab(QWidget* wgt)
     m_btnCreate = new QPushButton("&Create new \ntemplate");
     m_btnAddExisting = new QPushButton("&Add an existing \ntemplate...");
 
-
-
     connect(m_btnCreate, SIGNAL(clicked()), SIGNAL(createClicked()));
-
-
 
     QPixmap AddIcon(dirPath+"open.png");
     QPixmap createIcon(dirPath+"create.png");
@@ -40,12 +36,9 @@ MainTab::MainTab(QWidget* wgt)
     m_btnAddExisting->setIcon(AddIcon);
     m_btnAddExisting->setIconSize(AddIcon.size()/factor);
     m_btnAddExisting->setFlat(true);
-
-
     //=================================================
 
-    // list widget settings
-    QString dirPathIcons = QApplication::applicationDirPath();
+    // ===================== list widget settings ========
     m_listWidget = new TemplateList(this);
 
     connect(m_listWidget, SIGNAL(countListItemsChanged(int)),
@@ -57,6 +50,7 @@ MainTab::MainTab(QWidget* wgt)
                                     "to make \nit appear in this list");
     strWithoutTemplate->setFixedSize(m_listWidget->size());
     strWithoutTemplate->setObjectName("strWithoutTemplate");
+    //=============================================
 
     // qss style
     QFile file(dirPath+"style.qss");

@@ -9,6 +9,8 @@
 #include <QFile>
 #include <QVector>
 #include <QMouseEvent>
+#include <QProcess>
+#include <QFileInfo>
 
 //========================= Template list class ======================
 
@@ -22,6 +24,10 @@ TemplateList::TemplateList(QWidget* wgt, flags flag)
     if (m_currentFlag != TEMPLATE_LIST) {
         connect(m_listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
                 SLOT(slotSendSignal(QListWidgetItem*)));
+    }
+    else if (m_currentFlag == TEMPLATE_LIST) {
+        connect(m_listWidget, SIGNAL(itemClicked(QListWidgetItem*)),
+                SLOT(slotLaunchTemplate(QListWidgetItem*)));
     }
 
     if (m_currentFlag == PROGRAM_LIST_REMOVE) {
@@ -319,7 +325,29 @@ bool TemplateList::isEmpty() {
     return !m_listWidget->count();
 }
 
+void TemplateList::slotLaunchTemplate(QListWidgetItem* item) {
+    MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(item);
+    QString name = wgt->findChild<QLabel*>("templateName")->text();
 
+    QFile file(QApplication::applicationDirPath()
+               +QString("/Saves/%1.tff").arg(name));
+
+    file.open(QFile::ReadOnly);
+    QDataStream stream(&file);
+
+    QPixmap pix;
+
+    stream >> name >> pix;
+
+    QProcess* process = new QProcess;
+    while(!stream.atEnd()) {
+        QString str;
+        stream >> str;
+        QFileInfo fileInfo(str);
+        process->start(fileInfo.canonicalFilePath());
+        process->waitForStarted();
+    }
+}
 // ==============================================================
 
 

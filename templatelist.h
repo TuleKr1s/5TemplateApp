@@ -8,6 +8,7 @@ class MyWidget;
 class QListWidget;
 class QLabel;
 class QPushButton;
+class QProcess;
 
 class TemplateList : public QWidget
 {
@@ -66,7 +67,7 @@ private slots:
     void slotSendSignal();
     void slotSendSignal(QListWidgetItem*);
 
-
+    void slotLaunchTemplate(QListWidgetItem*);
 signals:
     void countListItemsChanged(int);
     void btnAddClicked(QPushButton*);

@@ -34,6 +34,7 @@ signals:
 private slots:
     void slotSwitchLbl();
 
+
 };
 
 #endif // MAINTAB_H
