@@ -91,7 +91,8 @@ void ProgramLst::addProgramToAddList(QString path) {
         file.setFile(file.canonicalFilePath());
 
         QFileIconProvider provider;
-        pix = provider.icon(file).pixmap(16,16);
+        pix = provider.icon(file).pixmap(QSize(100,100),
+                                         QIcon::Normal, QIcon::On);
     } else {
         ThreadPythonScript* script = new ThreadPythonScript(path);
         script->start();
@@ -238,14 +239,16 @@ void ThreadProgramList::run() {
             QPixmap programIcon;
             if (!file.fileName().endsWith(".url")) {
                 file.setFile(file.canonicalFilePath());
-                programIcon = provider.icon(file).pixmap(16,16);
+                programIcon = provider.icon(file).pixmap(QSize(100,100),
+                                                         QIcon::Normal, QIcon::On);
             }
             else {
                 QString dirPath = QApplication::applicationDirPath();
 
                 programName = programName.replace(".url", "");
                 programIcon = dirPath + "/Python/downloaded icons/"+programName+".png";
-                programIcon = programIcon.scaled(16,16);
+                QIcon icon(programIcon.scaled(100,100));
+                programIcon = icon.pixmap(QSize(100,100), QIcon::Normal, QIcon::On);
             }
 
 
@@ -285,7 +288,6 @@ void ThreadPythonScript::run() {
     process->waitForFinished();
 
     m_pix = dirPath + "/Python/downloaded icons/"+name+".png";
-    m_pix = m_pix.scaled(16,16);
 }
 
 QPixmap ThreadPythonScript::getPix() {

@@ -11,6 +11,7 @@
 #include <QMouseEvent>
 #include <QProcess>
 #include <QFileInfo>
+#include <QFileIconProvider>
 
 //========================= Template list class ======================
 
@@ -143,11 +144,14 @@ void TemplateList::makeListItem(QPixmap icon, QString name, QString path)
 
 
     // template icon
-    if (m_currentFlag == TEMPLATE_LIST)
-        icon = icon.scaled(icon.size()*2, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    QIcon templateIcon(icon.scaled(QSize(100,100)));
+    QPixmap pixIcon = templateIcon.pixmap(m_currentFlag == TEMPLATE_LIST
+                                  ? QSize(32,32) : QSize(16,16),
+                                  QIcon::Normal, QIcon::On);
     m_lblIcon = new QLabel(temp);
-    m_lblIcon->setPixmap(icon);
+    m_lblIcon->setPixmap(pixIcon);
     m_lblIcon->setObjectName("icon");
+
 
     // template name
     m_lblName = new QLabel(name, temp);
@@ -310,7 +314,29 @@ void TemplateList::slotSendSignal() {
 
 QLabel* TemplateList::getFirstWidgetPix() {
     MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(m_listWidget->item(0));
-    QLabel* lblPix = wgt->findChild<QLabel*>("icon");
+    QLabel* lblPath = wgt->findChild<QLabel*>("path");
+    QLabel* lblName = wgt->findChild<QLabel*>("templateName");
+    QPixmap pix;
+
+    QFileInfo file(lblPath->text());
+
+    if (file.filePath().endsWith(".url")) {
+        pix = QApplication::applicationDirPath()+
+                QString("/Python/downloaded icons/%1.png").arg(lblName->text());
+        QIcon icon(pix.scaled(QSize(100,100)));
+        pix = icon.pixmap(QSize(100,100), QIcon::Normal, QIcon::On);
+    }
+    else {
+        QFileIconProvider provider;
+        file.setFile(file.canonicalFilePath());
+        pix = provider.icon(file).pixmap(QSize(100,100),
+                                         QIcon::Normal, QIcon::On);
+    }
+
+
+    QLabel* lblPix = new QLabel;
+    lblPix->setPixmap(pix);
+    //QLabel* lblPix = wgt->findChild<QLabel*>("icon");
     return lblPix;
 }
 

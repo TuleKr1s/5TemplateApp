@@ -86,7 +86,6 @@ void Application::slotCreate(QPixmap pix) {
         return;
     }
 
-    //QPixmap pix(dirPath+"/icons/template icons/"+lstIcons[countIcon].fileName());
     QString name = m_wndCreate->getTemplateName();
 
     // save template to .tff (template file format)
@@ -106,20 +105,7 @@ void Application::slotCreate(QPixmap pix) {
     }
 
     fileSaveTemplate.close();
-    //=====================================
-
-//    fileSaveTemplate.open(QFile::ReadOnly);
-
-//    QString newName;
-//    QPixmap newPix;
-
-//    stream >> newName >> newPix;
-
-//    while (!stream.atEnd()) {
-//        QString str;
-//        stream >> str;
-//        qDebug() << str;
-//    }
+    //=====================================    
 
     m_mainTab->makeListItem(pix, name);
     showMainTab();
