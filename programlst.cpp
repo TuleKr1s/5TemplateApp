@@ -30,8 +30,8 @@ ProgramLst::ProgramLst(QWidget* wgt)
     // connect for add/remove program path to list
     connect(m_programRemoveList, SIGNAL(programAdd(QString)),
             SLOT(slotAddPath(QString)));
-    connect(m_programRemoveList, SIGNAL(programRemove(QString, int)),
-            SLOT(slotRemovePath(QString, int)));
+    connect(m_programRemoveList, SIGNAL(programRemove(QString)),
+            SLOT(slotRemovePath(QString)));
 
 
     QHBoxLayout* box = new QHBoxLayout;
@@ -74,6 +74,8 @@ QPixmap ProgramLst::getFirstItemPix() {
 void ProgramLst::resetLists() {
     m_programAddList->clear();
     m_programRemoveList->clear();
+    m_listPath.clear();
+    m_listProgram.clear();
 }
 
 bool ProgramLst::isRemoveListEmpty() {
@@ -83,24 +85,37 @@ bool ProgramLst::isRemoveListEmpty() {
 void ProgramLst::addProgramToAddList(QString path) {
     QFileInfo file(path);
 
-    file.setFile(file.canonicalFilePath());
 
-    QFileIconProvider provider;
-    QPixmap pix = provider.icon(file).pixmap(16,16);
+    QPixmap pix;
+    if (!file.fileName().endsWith(".url")) {
+        file.setFile(file.canonicalFilePath());
+
+        QFileIconProvider provider;
+        pix = provider.icon(file).pixmap(16,16);
+    } else {
+        ThreadPythonScript* script = new ThreadPythonScript(path);
+        script->start();
+        pix = script->getPix();
+    }
 
     QString name = file.fileName();
     name = name.replace(".lnk", "");
     name = name.replace(".exe", "");
+    name = name.replace(".url", "");
 
-    m_programAddList->makeListItem(pix, name);
+    m_programAddList->makeListItem(pix, name, file.filePath());
 }
 
 void ProgramLst::slotAddPath(QString path) {
     m_listPath.append(QFileInfo(path));
 }
 
-void ProgramLst::slotRemovePath(QString path, int index) {
-    m_listPath.erase(m_listPath.begin() + index);
+void ProgramLst::slotRemovePath(QString path) {
+    for (int i = 0; i < m_listPath.size(); ++i) {
+        if (m_listPath.at(i).filePath() == path) {
+            m_listPath.erase(m_listPath.begin() + i);
+        }
+    }
 }
 
 QFileInfoList ProgramLst::getRemoveListPath() {
@@ -202,7 +217,8 @@ void ThreadProgramList::run() {
 
     foreach(QFileInfo file, m_list) {
         if (file.isFile() && (file.fileName().endsWith(".lnk")
-                              || file.fileName().endsWith(".exe"))) {
+                              || file.fileName().endsWith(".exe")
+                              || file.fileName().endsWith(".url"))) {
             QFileIconProvider provider;
 
             QString programPath = file.filePath();
@@ -219,13 +235,24 @@ void ThreadProgramList::run() {
             if (!check)
                 continue;
 
-            file.setFile(file.canonicalFilePath());
-            QPixmap programIcon = provider.icon(file).pixmap(16,16);
+            QPixmap programIcon;
+            if (!file.fileName().endsWith(".url")) {
+                file.setFile(file.canonicalFilePath());
+                programIcon = provider.icon(file).pixmap(16,16);
+            }
+            else {
+                QString dirPath = QApplication::applicationDirPath();
+
+                programName = programName.replace(".url", "");
+                programIcon = dirPath + "/Python/downloaded icons/"+programName+".png";
+                programIcon = programIcon.scaled(16,16);
+            }
+
+
 
             if (programName.size() > 40)
                 programName.resize(40);
 
-            //m_programAddList->makeListItem(programIcon, programName);
             emit readyMakeItem(programIcon, programName, programPath);
         }
     }
@@ -235,3 +262,32 @@ void ThreadProgramList::run() {
     //fileInfoList = dir.entryInfoList();
 }
 // ==============================================================
+// ========================= thread python script class =========
+
+ThreadPythonScript::ThreadPythonScript(QString path)
+    : m_path(path) {
+
+}
+
+void ThreadPythonScript::run() {
+    QFileInfo file(m_path);
+    QString dirPath = QApplication::applicationDirPath();
+    QFile file1(dirPath +"/Python/program name.txt");
+    file1.open(QFile::WriteOnly);
+    QTextStream stream(&file1);
+    QString name = file.fileName().replace(".url", "");
+    stream << name;
+    file1.close();
+
+    QProcess* process = new QProcess;
+    QStringList arg = {dirPath + "/Python/download icon.py"};
+    process->start("python", arg);
+    process->waitForFinished();
+
+    m_pix = dirPath + "/Python/downloaded icons/"+name+".png";
+    m_pix = m_pix.scaled(16,16);
+}
+
+QPixmap ThreadPythonScript::getPix() {
+    return m_pix;
+}

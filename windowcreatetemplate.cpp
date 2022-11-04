@@ -151,18 +151,16 @@ void WindowCreateTemplate::hideEvent(QHideEvent*) {
     m_lst->resetLists();
 }
 
-// variable for the number of items stored in the registry
-int i = 0;
 void WindowCreateTemplate::slotAddProgramToList() {
     QStringList listPath = QFileDialog::getOpenFileNames(0,
                                                          "Choose the apps",
-                                                         "", "*.exe *.lnk");
+                                                         "", "*.exe *.lnk *.url");
 
 
     // saving the programs added to the list to the registry
     QSettings settings("5TuleKrisov", "5TemplateApp");
 
-    settings.setValue("/Settings/size", i);
+    int i = settings.value("/Settings/size", 0).toInt();
     foreach(QString path, listPath) {
         ++i;
         m_lst->addProgramToAddList(path);

@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QFileInfo>
 #include <QThread>
+#include <QProcess>
 #include <QListWidget>
 
 class QListWidgetItem;
@@ -41,8 +42,10 @@ private slots:
     void slotRemoveItem(QPushButton*);
 
     void slotAddPath(QString);
-    void slotRemovePath(QString, int);
+    void slotRemovePath(QString);
 };
+
+// =========== thread program list class ========
 
 class ThreadProgramList : public QThread
 {
@@ -59,6 +62,21 @@ private:
 
 signals:
     void readyMakeItem(QPixmap, QString, QString);
+};
+
+// ======== thread python script class ======
+
+class ThreadPythonScript : public QThread {
+    Q_OBJECT
+public:
+    ThreadPythonScript(QString path = "");
+
+    QPixmap getPix();
+
+    void run();
+private:
+    QPixmap m_pix;
+    QString m_path;
 };
 
 #endif // PROGRAMLST_H

@@ -1,10 +1,8 @@
 QLabel {
     color: white;
 }
-QLabel#error0 {
+QLabel#error0, QLabel#error15, QLabel#errorNoItem {
     color: red;
 }
 
-QLabel#error15 {
-    color: red;
-}
+

@@ -6,12 +6,19 @@
 #include <QFileInfo>
 #include <QPropertyAnimation>
 #include <QListWidget>
+#include <QSettings>
 
 Application::Application(QWidget* wgt)
     : QWidget(wgt)
 {
 
     setGeometry(QRect(QPoint(590,236), QSize(800, 600)));
+
+    // initial program settings in the registry
+    QSettings settings("5TuleKrisov", "5TemplateApp");
+    if (!settings.contains("/Settings/size")) {
+        settings.setValue("/Settings/size", 0);
+    }
 
     m_mainTab = new MainTab(this);
     m_wndCreate = new WindowCreateTemplate(this);
@@ -126,7 +133,7 @@ void Application::slotCreate(QPixmap pix) {
 void Application::loadTemplates() {
     QDir savesDir(dirPath+"/Saves");
 
-    QFileInfoList existingFiles = savesDir.entryInfoList(QDir::Files);
+    QFileInfoList existingFiles = savesDir.entryInfoList(QDir::Files, QDir::Time);
     foreach(QFileInfo fileInfo, existingFiles) {
         QFile file(fileInfo.filePath());
         file.open(QFile::ReadOnly);

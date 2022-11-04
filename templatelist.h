@@ -74,7 +74,7 @@ signals:
     void btnRemoveClicked(QPushButton*);
 
     void programAdd(QString);
-    void programRemove(QString, int);
+    void programRemove(QString);
 };
 
 // for sorting items int widget list

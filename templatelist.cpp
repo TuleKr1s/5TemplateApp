@@ -253,11 +253,6 @@ void TemplateList::slotItemDelete() {
     QListWidgetItem* item = arr[index];
 
     int row = m_listWidget->row(item);
-    delete m_listWidget->takeItem(row);
-
-    if (!m_programPath->text().isEmpty())
-        emit programRemove(wgt->findChild<QLabel*>("path")->text(), index);
-    emit countListItemsChanged(m_listWidget->count());
 
     if (m_currentFlag == TEMPLATE_LIST) {
         // delete template file
@@ -265,16 +260,22 @@ void TemplateList::slotItemDelete() {
         QFile file(QApplication::applicationDirPath()+QString("/Saves/%1.tff").arg(name));
         file.remove();
     }
+
+    if (!m_programPath->text().isEmpty()) {
+        emit programRemove(wgt->findChild<QLabel*>("path")->text());
+    }
+    delete m_listWidget->takeItem(row);
+    emit countListItemsChanged(m_listWidget->count());
 }
 
 void TemplateList::slotItemDelete(QListWidgetItem* item) {
 
-
     MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(item);
     QLabel* path = wgt->findChild<QLabel*>("path");
 
-    if (!m_programPath->text().isEmpty())
-        emit programRemove(path->text(), wgt->getIndex());
+    if (!path->text().isEmpty()) {
+        emit programRemove(path->text());
+    }
 
     delete m_listWidget->takeItem(m_listWidget->row(item));
 
@@ -339,14 +340,16 @@ void TemplateList::slotLaunchTemplate(QListWidgetItem* item) {
 
     stream >> name >> pix;
 
-    QProcess* process = new QProcess;
+
     while(!stream.atEnd()) {
         QString str;
         stream >> str;
         QFileInfo fileInfo(str);
-        process->start(fileInfo.canonicalFilePath());
+        QProcess* process = new QProcess;
+        process->startDetached("cmd", QStringList() << "/c" << fileInfo.filePath());
         process->waitForStarted();
     }
+    qApp->closeAllWindows();
 }
 // ==============================================================
 

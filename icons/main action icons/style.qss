@@ -9,6 +9,7 @@ QPushButton {
     background-position: top;
     padding-left: 5px;
     padding-right: 5px;
+    
 }
 
 QPushButton:hover {

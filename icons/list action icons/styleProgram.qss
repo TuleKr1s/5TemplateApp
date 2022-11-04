@@ -1,0 +1,115 @@
+QLabel#templateName {
+    color: white;
+    font-size: 12px;
+}
+
+QPushButton {
+    border-radius: 5px;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+QListWidget {
+    background-color: #212121;
+    border: none;
+    border-radius: 10px;
+}
+
+
+/* Общая вертикальная полоса прокрутки */
+QScrollBar:vertical
+{
+    width:8px;
+    background:rgba(0,0,0,0);
+    margin:0px,0px,0px,0px;
+    padding-top: 5px; 
+    padding-bottom: 5px; /* Зарезервировано ниже */
+}
+ 
+ /* Стиль слайдера в полосе прокрутки */
+QScrollBar::handle:vertical
+{
+    width:8px;
+    background:rgba(0,0,0,0.25);
+    border-radius:4px;
+    min-height:20px;
+}
+ 
+ /* Стиль сенсорного слайдера мыши */
+QScrollBar::handle:vertical:hover
+{
+    width:9px;
+    background:rgba(0,0,0,0.5);
+    border-radius:4px;
+    min-height:20;
+}
+ 
+ /* Установить стрелку вниз */
+QScrollBar::add-line:vertical
+{
+    height:0px;
+    width:0px;
+}
+ 
+ /* Настроить стрелку */
+QScrollBar::sub-line:vertical
+{
+    height:0px;
+    width:0px;
+}
+ 
+ /* Установить стрелку вниз: зависание */
+QScrollBar::add-line:vertical:hover
+{
+    height:0px;
+    width:0px;
+
+}
+ 
+ /* Настройка стрелки: состояние при наведении */
+QScrollBar::sub-line:vertical:hover
+{
+    height:0px;
+    width:0px;
+}
+ 
+ /* Когда прокручивается полоса прокрутки, верхняя часть и нижняя часть */
+QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical
+{
+    background:rgba(0,0,0,0.1);
+    border-radius:4px;
+}
+
+
+
+QListWidget::item {
+    border: none;
+    border-radius: 10px;
+}
+
+QListWidget::item:hover {
+    background-color: #313131;
+}
+
+QListWidget::item:selected {
+    background-color: #313131;
+}
+
+QPushButton:hover {
+    background-color: #7d7d7d;
+}
+QPushButton:pressed {
+    background-color: #aaaaaa;
+}
+
+
+
+QPushButton#btnDelete:hover {
+    background-color: #BF4829;
+}
+
+QPushButton#btnDelete:pressed {
+    background-color: #f16a48;
+}
+
+
