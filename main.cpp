@@ -15,6 +15,8 @@ int main(int argc, char *argv[]) {
     QString dirPath = QApplication::applicationDirPath();
     qDebug() << dirPath;
 
+    //test
+
     Application wf;
     wf.show();
 
