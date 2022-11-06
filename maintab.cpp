@@ -93,6 +93,9 @@ void MainTab::slotSwitchLbl() {
 
 }
 
+QStringList MainTab::getNames() {
+    m_listWidget->getNames();
+}
 
 
 

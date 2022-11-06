@@ -161,11 +161,28 @@ void WindowCreateTemplate::slotAddProgramToList() {
     QSettings settings("5TuleKrisov", "5TemplateApp");
 
     int i = settings.value("/Settings/size", 0).toInt();
+    bool check = 1;
+
     foreach(QString path, listPath) {
-        ++i;
-        m_lst->addProgramToAddList(path);
-        settings.setValue(QString("/Settings/%1/Path").arg(i), path);
-        settings.setValue("/Settings/size", i);
+        for (int k = 1; k <= i; ++k) {
+            QString str = settings.value(QString("/Settings/%1/Path").arg(k), "").toString();
+            if (path == str) {
+                check = 0;
+            }
+        }
+    }
+
+
+    if (check) {
+        foreach(QString path, listPath) {
+            ++i;
+            m_lst->addProgramToAddList(path);
+            settings.setValue(QString("/Settings/%1/Path").arg(i), path);
+            settings.setValue("/Settings/size", i);
+        }
+    }
+    else {
+        // вывести ошибку и предложить дальнейшие действия
     }
     //======================================
 

@@ -1,0 +1,27 @@
+QLabel {
+    color: white;
+    font-size: 24px;
+    min-width: 300px;
+    min-height: 140px;
+    /*background-image: url("C:/Users/TuleKr1s/Downloads/vh-b3RSYQCw.jpg");*/
+}
+QPushButton {
+    color:white;
+    font-size: 25px;
+    text-align: left;
+    border-radius: 10px;
+    margin-bottom: 3px;
+    background-color: #323232;
+    background-position: top;
+    padding-left: 5px;
+    padding-right: 5px;
+    
+}
+
+QPushButton:hover {
+    background-color: #7d7d7d;
+}
+
+QPushButton:pressed {
+    background-color: #aaaaaa;
+}

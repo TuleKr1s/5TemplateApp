@@ -9,7 +9,7 @@ def parser(request):
     google_crawler = GoogleImageCrawler(storage={'root_dir': f'{dirPath}/downloaded icons'})
     finalRequest = request + "icon png"
 
-    google_crawler.crawl(keyword=finalRequest, filters=dict(size = "medium"), max_num=1)
+    google_crawler.crawl(keyword=finalRequest, max_num=1)
 
 
 

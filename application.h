@@ -6,6 +6,7 @@
 #include "maintab.h"
 #include "windowcreatetemplate.h"
 #include "windowframe.h"
+#include "windowerror.h"
 
 #include <QFileInfo>
 #include <QApplication>
@@ -20,6 +21,8 @@ private:
     MainTab* m_mainTab;
     WindowCreateTemplate* m_wndCreate;
     WindowFrame* m_frame;
+
+    WindowError* error;
 
     QString dirPath = QApplication::applicationDirPath();
 

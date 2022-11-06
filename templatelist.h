@@ -28,6 +28,8 @@ public:
     int getCountListItems();
     QLabel* getFirstWidgetPix();
 
+    QStringList getNames();
+
     bool isEmpty();
 
     void clear();

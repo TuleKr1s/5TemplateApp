@@ -17,6 +17,7 @@ SOURCES += \
     templatelist.cpp \
     test.cpp \
     windowcreatetemplate.cpp \
+    windowerror.cpp \
     windowframe.cpp
 
 HEADERS += \
@@ -27,6 +28,7 @@ HEADERS += \
     templatelist.h \
     test.h \
     windowcreatetemplate.h \
+    windowerror.h \
     windowframe.h
 
 FORMS +=

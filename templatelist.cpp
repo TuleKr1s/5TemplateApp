@@ -377,6 +377,16 @@ void TemplateList::slotLaunchTemplate(QListWidgetItem* item) {
     }
     qApp->closeAllWindows();
 }
+
+QStringList TemplateList::getNames() {
+    QStringList names;
+    for (int i = 0; i < arr.size(); ++i) {
+        MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(arr[i]);
+        QString name = wgt->findChild<QLabel*>("templateName")->text();
+        names << name;
+    }
+    return names;
+}
 // ==============================================================
 
 
