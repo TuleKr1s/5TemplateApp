@@ -7,12 +7,22 @@
 #include <QFile>
 #include <QApplication>
 #include <QFrame>
+#include <QPainter>
 
 WindowError::WindowError(QWidget* wgt, flags flag)
-    : QWidget(wgt), mainWgt(wgt), m_currentFlag(flag)
+    : QDialog(wgt, Qt::FramelessWindowHint), mainWgt(wgt), m_currentFlag(flag)
 {
     setFocus();
-    setGeometry(0,0,mainWgt->width(), mainWgt->height());
+    setGeometry(mainWgt->pos().x(),mainWgt->pos().y(),
+                mainWgt->width(), mainWgt->height());
+    // transparent background
+    this->setAttribute(Qt::WA_TranslucentBackground);
+    // darkened background
+    Background* bg = new Background(this);
+
+    // clickedOk = QDialog::Accept, clickedCancel = QDialog::Reject
+    connect(this, SIGNAL(clickedOk()), SLOT(accept()));
+    connect(this, SIGNAL(clickedCancel()), SLOT(reject()));
 
     // qss
     QFile file(QApplication::applicationDirPath()+"/icons/window error/style.qss");
@@ -20,14 +30,14 @@ WindowError::WindowError(QWidget* wgt, flags flag)
     QString strQss = file.readAll();
     setStyleSheet(strQss);
 
-    QPalette pal(this->palette());
-    pal.setColor(QPalette::Window, QColor(0,0,0,75 ));
-    this->setAutoFillBackground(true);
-    this->setPalette(pal);
+
 
     // ============== buttons ================
     m_btnOk = new QPushButton("Ok");
     m_btnCancel = new QPushButton("Cancel");
+
+    m_btnOk->setObjectName("btnOk");
+    m_btnCancel->setObjectName("btnCancel");
 
     m_btnBox = new QHBoxLayout;
     m_btnBox->addStretch();
@@ -42,29 +52,33 @@ WindowError::WindowError(QWidget* wgt, flags flag)
     // ====================================
 
     // ================= error text =====================
-    m_text = new QLabel;
-    m_text->setText("Unknown error");
+    m_title = new QLabel("Error");
+    m_title->setObjectName("title");
 
-    QHBoxLayout* textBox = new QHBoxLayout;
-    textBox->addStretch();
-    textBox->addWidget(m_text);
-    textBox->addStretch();
+    m_text = new QLabel("Unknown error");
+    m_text->setObjectName("text");
+    m_text->setMaximumHeight(65);
+    m_text->setWordWrap(true);
     //=======================================
-
-    QFrame* line = new QFrame;
-    line->setFrameShape(QFrame::HLine);
-    line->setFrameShadow(QFrame::Sunken);
 
     // error layout
     QVBoxLayout* errorBox = new QVBoxLayout;
-    errorBox->addLayout(textBox);
-    errorBox->addWidget(line);
+    errorBox->setContentsMargins(0,0,0,0);
+    errorBox->addWidget(m_title);
+    errorBox->addSpacing(5);
+    errorBox->addWidget(m_text);
     errorBox->addStretch();
     errorBox->addLayout(m_btnBox);
 
     //=================== central widget ========================
     temp = new QWidget;
-    temp->setFixedSize(300,200);
+    temp->setObjectName("central");
+    temp->setFixedSize(400,200);
+    temp->setStyleSheet("QWidget#central {"
+                        "background-image: url("+
+                        QApplication::applicationDirPath()+
+                        "/icons/window error/error image black.png);"
+                        "}");
 
     QPalette palette(temp->palette());
     palette.setColor(QPalette::Window, QColor("#080808"));
@@ -113,6 +127,10 @@ void WindowError::setText(QString str) {
     m_text->setText(str);
 }
 
+void WindowError::setTitle(QString str) {
+    m_title->setText(str);
+}
+
 void WindowError::mousePressEvent(QMouseEvent* me) {
     if(!(me->pos().x() > temp->pos().x() && me->pos().y() > temp->pos().y()
             && me->pos().x() < temp->pos().x()+temp->width()
@@ -136,3 +154,4 @@ void WindowError::keyPressEvent(QKeyEvent* ke) {
         QWidget::keyPressEvent(ke);
     }
 }
+

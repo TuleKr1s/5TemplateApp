@@ -25,6 +25,8 @@ public:
 
     void makeListItem(QPixmap, QString, QString path = "");
     void makeListItem(QLabel*, QLabel*);
+    void removeItem(QString);
+
     int getCountListItems();
     QLabel* getFirstWidgetPix();
 

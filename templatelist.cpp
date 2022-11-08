@@ -277,8 +277,10 @@ void TemplateList::slotItemDelete(QListWidgetItem* item) {
     MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(item);
     QLabel* path = wgt->findChild<QLabel*>("path");
 
-    if (!path->text().isEmpty()) {
-        emit programRemove(path->text());
+    if (m_currentFlag != TEMPLATE_LIST ) {
+        if (!path->text().isEmpty()) {
+            emit programRemove(path->text());
+        }
     }
 
     delete m_listWidget->takeItem(m_listWidget->row(item));
@@ -382,10 +384,22 @@ QStringList TemplateList::getNames() {
     QStringList names;
     for (int i = 0; i < arr.size(); ++i) {
         MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(arr[i]);
+        qDebug() << wgt;
         QString name = wgt->findChild<QLabel*>("templateName")->text();
         names << name;
     }
     return names;
+}
+
+void TemplateList::removeItem(QString itemName) {
+    qDebug() << "1";
+    for(int i = 0; i < arr.size(); ++i) {
+        MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(arr[i]);
+        QString name = wgt->findChild<QLabel*>("templateName")->text();
+        if (itemName == name) {
+            slotItemDelete(arr[i]);
+        }
+    }
 }
 // ==============================================================
 

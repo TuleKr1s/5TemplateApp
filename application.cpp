@@ -38,22 +38,15 @@ Application::Application(QWidget* wgt)
     QString str = QLatin1String(file.readAll());
     setStyleSheet(str);
 
-    //==============temp================
-    error = new WindowError(this);
-    //=================================
+
 
     // main layout
-    QVBoxLayout* mainBox = new QVBoxLayout;
-    mainBox->addWidget(m_frame);
-
-    //temp
-    mainBox->addWidget(error);
-
-    mainBox->addWidget(m_mainTab);
-    mainBox->addWidget(m_wndCreate);
+    m_mainBox = new QVBoxLayout;
+    m_mainBox->addWidget(m_frame);
+    m_mainBox->addWidget(m_mainTab);
+    m_mainBox->addWidget(m_wndCreate);
 
     m_wndCreate->hide();
-
 
     loadTemplates();
 }
@@ -98,14 +91,27 @@ void Application::slotCreate(QPixmap pix) {
     }
 
     QString name = m_wndCreate->getTemplateName();
-
     // check for existing template name
     QStringList existingNames = m_mainTab->getNames();
     foreach(QString existName, existingNames) {
         if (name == existName) {
             // вывести ошибку и предложить дальнейшие действия
+            WindowError* m_errorWnd = new WindowError(this);
+            QString errorText("A template with the same name already"
+                              " exists. Do you want to overwrite it?");
+            QString titleText("Creation error");
+            m_errorWnd->setTitle(titleText);
+            m_errorWnd->setText(errorText);
+            if (m_errorWnd->exec() == QDialog::Rejected)
+                return;
+            else {
+
+                m_mainTab->removeItem(name);
+            }
+
         }
     }
+
 
 
     // save template to .tff (template file format)
@@ -153,7 +159,4 @@ void Application::loadTemplates() {
         file.close();
     }
 }
-
-
-
 

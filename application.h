@@ -11,6 +11,8 @@
 #include <QFileInfo>
 #include <QApplication>
 
+class QVBoxLayout;
+
 class Application : public QWidget
 {
     Q_OBJECT
@@ -22,9 +24,9 @@ private:
     WindowCreateTemplate* m_wndCreate;
     WindowFrame* m_frame;
 
-    WindowError* error;
-
     QString dirPath = QApplication::applicationDirPath();
+
+    QVBoxLayout* m_mainBox;
 
     void loadTemplates();
 private slots:
@@ -32,6 +34,7 @@ private slots:
     void showCreateWnd();
 
     void slotCreate(QPixmap);
+
 };
 
 #endif // APPLICATION_H

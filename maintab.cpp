@@ -94,9 +94,12 @@ void MainTab::slotSwitchLbl() {
 }
 
 QStringList MainTab::getNames() {
-    m_listWidget->getNames();
+    return m_listWidget->getNames();
 }
 
+void MainTab::removeItem(QString itemName) {
+    m_listWidget->removeItem(itemName);
+}
 
 
 
