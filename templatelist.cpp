@@ -338,7 +338,6 @@ QLabel* TemplateList::getFirstWidgetPix() {
 
     QLabel* lblPix = new QLabel;
     lblPix->setPixmap(pix);
-    //QLabel* lblPix = wgt->findChild<QLabel*>("icon");
     return lblPix;
 }
 
@@ -382,9 +381,8 @@ void TemplateList::slotLaunchTemplate(QListWidgetItem* item) {
 
 QStringList TemplateList::getNames() {
     QStringList names;
-    for (int i = 0; i < arr.size(); ++i) {
-        MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(arr[i]);
-        qDebug() << wgt;
+    for (int i = 0; i < m_listWidget->count(); ++i) {
+        MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(m_listWidget->item(i));
         QString name = wgt->findChild<QLabel*>("templateName")->text();
         names << name;
     }
@@ -392,12 +390,11 @@ QStringList TemplateList::getNames() {
 }
 
 void TemplateList::removeItem(QString itemName) {
-    qDebug() << "1";
-    for(int i = 0; i < arr.size(); ++i) {
-        MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(arr[i]);
+    for(int i = 0; i < m_listWidget->count(); ++i) {
+        MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(m_listWidget->item(i));
         QString name = wgt->findChild<QLabel*>("templateName")->text();
         if (itemName == name) {
-            slotItemDelete(arr[i]);
+            slotItemDelete(m_listWidget->item(i));
         }
     }
 }

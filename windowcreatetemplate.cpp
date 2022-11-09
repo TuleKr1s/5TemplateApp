@@ -1,5 +1,6 @@
 #include "windowcreatetemplate.h"
 #include "programlst.h"
+#include "windowerror.h"
 
 #include <QLineEdit>
 #include <QLabel>
@@ -183,6 +184,12 @@ void WindowCreateTemplate::slotAddProgramToList() {
     }
     else {
         // вывести ошибку и предложить дальнейшие действия
+        WindowError* errorWnd = new WindowError(mainWgt, WindowError::BTN_OK);
+        QString errorText("This program is already on the list");
+        QString errorTitle("Adding error");
+        errorWnd->setText(errorText);
+        errorWnd->setTitle(errorTitle);
+        errorWnd->exec();
     }
     //======================================
 

@@ -95,17 +95,16 @@ void Application::slotCreate(QPixmap pix) {
     QStringList existingNames = m_mainTab->getNames();
     foreach(QString existName, existingNames) {
         if (name == existName) {
-            // вывести ошибку и предложить дальнейшие действия
-            WindowError* m_errorWnd = new WindowError(this);
+            // display an error about an existing template with the name
+            WindowError* errorWnd = new WindowError(this);
             QString errorText("A template with the same name already"
                               " exists. Do you want to overwrite it?");
             QString titleText("Creation error");
-            m_errorWnd->setTitle(titleText);
-            m_errorWnd->setText(errorText);
-            if (m_errorWnd->exec() == QDialog::Rejected)
+            errorWnd->setTitle(titleText);
+            errorWnd->setText(errorText);
+            if (errorWnd->exec() == QDialog::Rejected)
                 return;
             else {
-
                 m_mainTab->removeItem(name);
             }
 

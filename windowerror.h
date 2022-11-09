@@ -38,6 +38,9 @@ private:
 
     QHBoxLayout* m_btnBox;
 
+    void openAnim();
+    void closeAnim();
+
 protected:
     virtual void mousePressEvent(QMouseEvent*);
     virtual void keyPressEvent(QKeyEvent*);

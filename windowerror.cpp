@@ -8,6 +8,7 @@
 #include <QApplication>
 #include <QFrame>
 #include <QPainter>
+#include <QPropertyAnimation>
 
 WindowError::WindowError(QWidget* wgt, flags flag)
     : QDialog(wgt, Qt::FramelessWindowHint), mainWgt(wgt), m_currentFlag(flag)
@@ -29,7 +30,6 @@ WindowError::WindowError(QWidget* wgt, flags flag)
     file.open(QFile::ReadOnly);
     QString strQss = file.readAll();
     setStyleSheet(strQss);
-
 
 
     // ============== buttons ================
@@ -99,6 +99,8 @@ WindowError::WindowError(QWidget* wgt, flags flag)
     vBox->addStretch();
     setLayout(vBox);
 
+    // open error window animation
+    openAnim();
 }
 
 void WindowError::setFlag(flags flag) {
@@ -153,5 +155,15 @@ void WindowError::keyPressEvent(QKeyEvent* ke) {
     default:
         QWidget::keyPressEvent(ke);
     }
+}
+
+void WindowError::openAnim() {
+    int duration = 600;
+    QPropertyAnimation* anim = new QPropertyAnimation(this, "windowOpacity");
+    anim->setDuration(duration);
+    anim->setKeyValueAt(0, 1);
+    anim->setKeyValueAt(0.5, 0);
+    anim->setKeyValueAt(1, 1);
+    anim->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
