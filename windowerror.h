@@ -18,17 +18,27 @@ public:
         BTN_ALL
     };
 
-    WindowError(QWidget* wgt = 0, flags flag = BTN_ALL);
+    enum types {
+        ERROR_WND,
+        INFO_WND,
+        WARNING_WND
+    };
 
-    void setFlag(flags);
+    WindowError(QWidget* wgt = 0,
+                types type = ERROR_WND,
+                flags flag = BTN_ALL
+                );
+
     void setText(QString);
     void setTitle(QString);
 
 private:
     QWidget* mainWgt;
     QWidget* temp;
+    QString m_styleSheet;
 
     flags m_currentFlag;
+    types m_currentType;
 
     QLabel* m_title;
     QLabel* m_text;
@@ -47,10 +57,11 @@ protected:
 
 private slots:
     void slotChangeFlag();
+    void slotChangeType();
 
 
 signals:
-    void flagChanged();
+
     void clickedOk();
     void clickedCancel();
 };

@@ -10,8 +10,9 @@
 #include <QPainter>
 #include <QPropertyAnimation>
 
-WindowError::WindowError(QWidget* wgt, flags flag)
-    : QDialog(wgt, Qt::FramelessWindowHint), mainWgt(wgt), m_currentFlag(flag)
+WindowError::WindowError(QWidget* wgt,types type, flags flag)
+    : QDialog(wgt, Qt::FramelessWindowHint), mainWgt(wgt),
+      m_currentFlag(flag), m_currentType(type)
 {
     setFocus();
     setGeometry(mainWgt->pos().x(),mainWgt->pos().y(),
@@ -26,10 +27,16 @@ WindowError::WindowError(QWidget* wgt, flags flag)
     connect(this, SIGNAL(clickedCancel()), SLOT(reject()));
 
     // qss
-    QFile file(QApplication::applicationDirPath()+"/icons/window error/style.qss");
+    QFile file;
+    if (m_currentType == ERROR_WND)
+        file.setFileName(QApplication::applicationDirPath()+"/icons/window error/error.qss");
+    else if(m_currentType == INFO_WND)
+        file.setFileName(QApplication::applicationDirPath()+"/icons/window error/info.qss");
+    else if(m_currentType == WARNING_WND)
+        file.setFileName(QApplication::applicationDirPath()+"/icons/window error/warning.qss");
     file.open(QFile::ReadOnly);
-    QString strQss = file.readAll();
-    setStyleSheet(strQss);
+    m_styleSheet = file.readAll();
+    setStyleSheet(m_styleSheet);
 
 
     // ============== buttons ================
@@ -46,9 +53,6 @@ WindowError::WindowError(QWidget* wgt, flags flag)
 
     connect(m_btnOk, SIGNAL(clicked()), SIGNAL(clickedOk()));
     connect(m_btnCancel, SIGNAL(clicked()), SIGNAL(clickedCancel()));
-
-    slotChangeFlag();
-    connect(this, SIGNAL(flagChanged()), SLOT(slotChangeFlag()));
     // ====================================
 
     // ================= error text =====================
@@ -74,11 +78,6 @@ WindowError::WindowError(QWidget* wgt, flags flag)
     temp = new QWidget;
     temp->setObjectName("central");
     temp->setFixedSize(400,200);
-    temp->setStyleSheet("QWidget#central {"
-                        "background-image: url("+
-                        QApplication::applicationDirPath()+
-                        "/icons/window error/error image black.png);"
-                        "}");
 
     QPalette palette(temp->palette());
     palette.setColor(QPalette::Window, QColor("#080808"));
@@ -87,6 +86,9 @@ WindowError::WindowError(QWidget* wgt, flags flag)
 
     temp->setLayout(errorBox);
     // ===================================================
+
+    slotChangeType();
+    slotChangeFlag();
 
     QHBoxLayout* hBox = new QHBoxLayout;
     hBox->addStretch();
@@ -101,11 +103,6 @@ WindowError::WindowError(QWidget* wgt, flags flag)
 
     // open error window animation
     openAnim();
-}
-
-void WindowError::setFlag(flags flag) {
-    m_currentFlag = flag;
-    emit flagChanged();
 }
 
 void WindowError::slotChangeFlag() {
@@ -167,3 +164,35 @@ void WindowError::openAnim() {
     anim->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
+void WindowError::slotChangeType() {
+
+    switch(m_currentType) {
+    case ERROR_WND:
+        temp->setStyleSheet("QWidget#central {"
+                            "background-image: url("+
+                            QApplication::applicationDirPath()+
+                            "/icons/window error/error image black.png);"
+                            "}");
+        break;
+    case INFO_WND:
+        temp->setStyleSheet("QWidget#central {"
+                            "background-image: url("+
+                            QApplication::applicationDirPath()+
+                            "/icons/window error/info image black.png);"
+                            "}");
+        break;
+    case WARNING_WND:
+        temp->setStyleSheet("QWidget#central {"
+                            "background-image: url("+
+                            QApplication::applicationDirPath()+
+                            "/icons/window error/warning image black.png);"
+                            "}");
+        break;
+    default:
+        //nothing
+        break;
+    }
+
+
+
+}

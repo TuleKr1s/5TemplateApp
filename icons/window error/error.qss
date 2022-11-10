@@ -20,7 +20,7 @@ QPushButton {
     margin-bottom: 12px;
 }
 
-/* QPushButton#btnOk {
+QPushButton#btnOk {
     background-color: #F35559;
 }
 
@@ -31,18 +31,6 @@ QPushButton#btnOk:hover {
 QPushButton#btnOk:pressed {
     background-color: #d41219;
 }
-
-QPushButton#btnOk {
-    background-color: #00C4F5;
-}
-
-QPushButton#btnOk:hover {
-    background-color: #01B7E5;
-}
-
-QPushButton#btnOk:pressed {
-    background-color: #0398bd;
-} */
 
 QPushButton#btnCancel {
     background-color: #9b9b9b;

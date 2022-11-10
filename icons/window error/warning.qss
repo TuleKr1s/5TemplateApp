@@ -20,29 +20,18 @@ QPushButton {
     margin-bottom: 12px;
 }
 
-/* QPushButton#btnOk {
-    background-color: #F35559;
-}
-
-QPushButton#btnOk:hover {
-    background-color: #e7343a;
-}
-
-QPushButton#btnOk:pressed {
-    background-color: #d41219;
-}
-
 QPushButton#btnOk {
-    background-color: #00C4F5;
+    background-color: #a1a101;
 }
 
 QPushButton#btnOk:hover {
-    background-color: #01B7E5;
+    background-color: #959501;
 }
 
 QPushButton#btnOk:pressed {
-    background-color: #0398bd;
-} */
+    background-color: #7c7c02;
+}
+
 
 QPushButton#btnCancel {
     background-color: #9b9b9b;

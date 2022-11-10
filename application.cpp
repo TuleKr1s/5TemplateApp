@@ -96,7 +96,7 @@ void Application::slotCreate(QPixmap pix) {
     foreach(QString existName, existingNames) {
         if (name == existName) {
             // display an error about an existing template with the name
-            WindowError* errorWnd = new WindowError(this);
+            WindowError* errorWnd = new WindowError(this, WindowError::WARNING_WND);
             QString errorText("A template with the same name already"
                               " exists. Do you want to overwrite it?");
             QString titleText("Creation error");
