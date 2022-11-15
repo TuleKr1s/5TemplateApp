@@ -6,9 +6,12 @@
 #include "maintab.h"
 #include "windowcreatetemplate.h"
 #include "windowframe.h"
+#include "windowerror.h"
 
 #include <QFileInfo>
 #include <QApplication>
+
+class QVBoxLayout;
 
 class Application : public QWidget
 {
@@ -23,12 +26,15 @@ private:
 
     QString dirPath = QApplication::applicationDirPath();
 
+    QVBoxLayout* m_mainBox;
+
     void loadTemplates();
 private slots:
     void showMainTab();
     void showCreateWnd();
 
     void slotCreate(QPixmap);
+
 };
 
 #endif // APPLICATION_H

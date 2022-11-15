@@ -25,8 +25,12 @@ public:
 
     void makeListItem(QPixmap, QString, QString path = "");
     void makeListItem(QLabel*, QLabel*);
+    void removeItem(QString);
+
     int getCountListItems();
     QLabel* getFirstWidgetPix();
+
+    QStringList getNames();
 
     bool isEmpty();
 
@@ -63,6 +67,8 @@ private slots:
 
     void slotItemDelete();
     void slotItemDelete(QListWidgetItem*);
+
+    void slotItemEdit();
 
     void slotSendSignal();
     void slotSendSignal(QListWidgetItem*);

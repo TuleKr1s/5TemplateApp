@@ -69,7 +69,8 @@ signals:
 class ThreadPythonScript : public QThread {
     Q_OBJECT
 public:
-    ThreadPythonScript(QString path = "");
+    ThreadPythonScript(QString name = "",
+                       QString path = "");
 
     QPixmap getPix();
 
@@ -77,6 +78,10 @@ public:
 private:
     QPixmap m_pix;
     QString m_path;
+    QString m_name;
+
+signals:
+    void pixDownloaded(QPixmap, QString, QString);
 };
 
 #endif // PROGRAMLST_H

@@ -85,6 +85,10 @@ bool ProgramLst::isRemoveListEmpty() {
 void ProgramLst::addProgramToAddList(QString path) {
     QFileInfo file(path);
 
+    QString name = file.fileName();
+    name = name.replace(".lnk", "");
+    name = name.replace(".exe", "");
+    name = name.replace(".url", "");
 
     QPixmap pix;
     if (!file.fileName().endsWith(".url")) {
@@ -93,18 +97,13 @@ void ProgramLst::addProgramToAddList(QString path) {
         QFileIconProvider provider;
         pix = provider.icon(file).pixmap(QSize(100,100),
                                          QIcon::Normal, QIcon::On);
+        m_programAddList->makeListItem(pix, name, file.filePath());
     } else {
-        ThreadPythonScript* script = new ThreadPythonScript(path);
+        ThreadPythonScript* script = new ThreadPythonScript(name, file.filePath());
         script->start();
-        pix = script->getPix();
+        connect(script, SIGNAL(pixDownloaded(QPixmap, QString, QString)),
+                m_programAddList, SLOT(slotMakeItem(QPixmap,QString,QString)));
     }
-
-    QString name = file.fileName();
-    name = name.replace(".lnk", "");
-    name = name.replace(".exe", "");
-    name = name.replace(".url", "");
-
-    m_programAddList->makeListItem(pix, name, file.filePath());
 }
 
 void ProgramLst::slotAddPath(QString path) {
@@ -267,8 +266,8 @@ void ThreadProgramList::run() {
 // ==============================================================
 // ========================= thread python script class =========
 
-ThreadPythonScript::ThreadPythonScript(QString path)
-    : m_path(path) {
+ThreadPythonScript::ThreadPythonScript(QString name, QString path)
+    : m_path(path), m_name(name) {
 
 }
 
@@ -288,6 +287,7 @@ void ThreadPythonScript::run() {
     process->waitForFinished();
 
     m_pix = dirPath + "/Python/downloaded icons/"+name+".png";
+    emit pixDownloaded(m_pix, m_name, m_path);
 }
 
 QPixmap ThreadPythonScript::getPix() {

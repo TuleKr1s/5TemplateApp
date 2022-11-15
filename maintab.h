@@ -17,6 +17,9 @@ public:
     MainTab(QWidget* wgt = 0);
 
     void makeListItem(QPixmap, QString);
+    void removeItem(QString);
+
+    QStringList getNames();
 private:
     QWidget* mainWgt;
 

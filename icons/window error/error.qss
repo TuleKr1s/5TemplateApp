@@ -1,0 +1,45 @@
+QLabel#title {
+    color: white;
+    font-size: 36px;
+    padding-left: 3px;
+}
+
+QLabel#text {
+    color: white;
+    font-size: 18px;
+    padding-left: 10px;
+}
+
+QPushButton {
+    color:white;
+    min-width: 100px;
+    font-size: 25px;
+    text-align: center;
+    border-radius: 4px;
+    margin-right: 20px;
+    margin-bottom: 12px;
+}
+
+QPushButton#btnOk {
+    background-color: #F35559;
+}
+
+QPushButton#btnOk:hover {
+    background-color: #e7343a;
+}
+
+QPushButton#btnOk:pressed {
+    background-color: #d41219;
+}
+
+QPushButton#btnCancel {
+    background-color: #9b9b9b;
+}
+
+QPushButton#btnCancel:hover {
+    background-color: #858585
+}
+
+QPushButton#btnCancel:pressed {
+    background-color: #707070;
+}

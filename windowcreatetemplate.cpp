@@ -1,5 +1,6 @@
 #include "windowcreatetemplate.h"
 #include "programlst.h"
+#include "windowerror.h"
 
 #include <QLineEdit>
 #include <QLabel>
@@ -9,6 +10,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QSettings>
+#include <QPropertyAnimation>
 
 WindowCreateTemplate::WindowCreateTemplate(QWidget* wgt)
     : QWidget(wgt), mainWgt(wgt)
@@ -143,11 +145,31 @@ void WindowCreateTemplate::slotSendCreateSignal() {
     emit createClicked(pix);
 }
 
-void WindowCreateTemplate::showEvent(QShowEvent*) {
+void WindowCreateTemplate::showEvent() {
+    show();
+    QPropertyAnimation* anim = new QPropertyAnimation(this,"pos");
+    int x = width();
+    int y = 0;
+    anim->setDuration(125);
+    anim->setStartValue(QPoint(x,y));
+    anim->setEndValue(QPoint(0, y));
+    anim->start(QAbstractAnimation::DeleteWhenStopped);
+
     m_lst->getProgramList();
 }
 
-void WindowCreateTemplate::hideEvent(QHideEvent*) {
+void WindowCreateTemplate::hideEvent() {
+    QPropertyAnimation* anim = new QPropertyAnimation(this,"pos");
+    int x = width();
+    int y = 0;
+    anim->setDuration(125);
+    anim->setStartValue(QPoint(0, y));
+    anim->setEndValue(QPoint(x,y));
+    anim->start(QAbstractAnimation::DeleteWhenStopped);
+
+    setTemplateName("");
+    connect(anim, SIGNAL(finished()), SLOT(hide()));
+
     m_lst->resetLists();
 }
 
@@ -161,11 +183,34 @@ void WindowCreateTemplate::slotAddProgramToList() {
     QSettings settings("5TuleKrisov", "5TemplateApp");
 
     int i = settings.value("/Settings/size", 0).toInt();
+    bool check = 1;
+
     foreach(QString path, listPath) {
-        ++i;
-        m_lst->addProgramToAddList(path);
-        settings.setValue(QString("/Settings/%1/Path").arg(i), path);
-        settings.setValue("/Settings/size", i);
+        for (int k = 1; k <= i; ++k) {
+            QString str = settings.value(QString("/Settings/%1/Path").arg(k), "").toString();
+            if (path == str) {
+                check = 0;
+            }
+        }
+    }
+
+
+    if (check) {
+        foreach(QString path, listPath) {
+            ++i;
+            m_lst->addProgramToAddList(path);
+            settings.setValue(QString("/Settings/%1/Path").arg(i), path);
+            settings.setValue("/Settings/size", i);
+        }
+    }
+    else {
+        // вывести ошибку и предложить дальнейшие действия
+        WindowError* errorWnd = new WindowError(mainWgt, WindowError::INFO_WND, WindowError::BTN_OK);
+        QString errorText("This program is already on the list");
+        QString errorTitle("Information");
+        errorWnd->setText(errorText);
+        errorWnd->setTitle(errorTitle);
+        errorWnd->exec();
     }
     //======================================
 

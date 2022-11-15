@@ -103,6 +103,8 @@ void TemplateList::makeListItem(QPixmap icon, QString name, QString path)
     connect(m_btnRemove, SIGNAL(clicked()),
             SLOT(slotItemDelete()));
 
+    connect(m_btnEdit, SIGNAL(clicked()),
+            SLOT(slotItemEdit()));
     connect(m_btnDelete, SIGNAL(clicked()),
             SLOT(slotItemDelete()));
 
@@ -277,8 +279,10 @@ void TemplateList::slotItemDelete(QListWidgetItem* item) {
     MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(item);
     QLabel* path = wgt->findChild<QLabel*>("path");
 
-    if (!path->text().isEmpty()) {
-        emit programRemove(path->text());
+    if (m_currentFlag != TEMPLATE_LIST ) {
+        if (!path->text().isEmpty()) {
+            emit programRemove(path->text());
+        }
     }
 
     delete m_listWidget->takeItem(m_listWidget->row(item));
@@ -336,7 +340,6 @@ QLabel* TemplateList::getFirstWidgetPix() {
 
     QLabel* lblPix = new QLabel;
     lblPix->setPixmap(pix);
-    //QLabel* lblPix = wgt->findChild<QLabel*>("icon");
     return lblPix;
 }
 
@@ -376,6 +379,30 @@ void TemplateList::slotLaunchTemplate(QListWidgetItem* item) {
         process->waitForStarted();
     }
     qApp->closeAllWindows();
+}
+
+QStringList TemplateList::getNames() {
+    QStringList names;
+    for (int i = 0; i < m_listWidget->count(); ++i) {
+        MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(m_listWidget->item(i));
+        QString name = wgt->findChild<QLabel*>("templateName")->text();
+        names << name;
+    }
+    return names;
+}
+
+void TemplateList::removeItem(QString itemName) {
+    for(int i = 0; i < m_listWidget->count(); ++i) {
+        MyWidget* wgt = (MyWidget*)m_listWidget->itemWidget(m_listWidget->item(i));
+        QString name = wgt->findChild<QLabel*>("templateName")->text();
+        if (itemName == name) {
+            slotItemDelete(m_listWidget->item(i));
+        }
+    }
+}
+
+void TemplateList::slotItemEdit() {
+
 }
 // ==============================================================
 

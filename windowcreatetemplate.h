@@ -22,6 +22,9 @@ public:
     QFileInfoList getListPath();
 
     QString checkError();
+
+    void hideEvent();
+    void showEvent();
 private:
     QWidget* mainWgt;
 
@@ -40,10 +43,6 @@ private:
     ProgramLst* m_lst;
 
 
-
-protected:
-    virtual void showEvent(QShowEvent*);
-    virtual void hideEvent(QHideEvent*);
 
 private slots:
     void slotSendCreateSignal();
